@@ -73,15 +73,46 @@ export default function Home() {
           </div>
         );
 
-      default:
-        return (
-          <div className="text-center space-y-6">
-            <h1 className="text-4xl font-bold">Welcome to SpiralPrompt</h1>
-            <p className="text-gray-400">
-              Let your thoughts resonate through prompts, stories, and visual echoes.
-            </p>
-          </div>
-        );
+        case "phrases":
+          return (
+            <div className="space-y-6">
+              {/* Search Input */}
+              <input
+                type="text"
+                placeholder="Whisper your words... (or let the style speak for you)"
+                className="w-full bg-gray-800 text-white p-3 rounded border border-gray-600"
+              />
+        
+              {[1, 2, 3, 4, 5].map((_, idx) => (
+                <div key={idx} className="bg-[#1f1f1f] p-4 rounded shadow space-y-4">
+                  <p className="text-white">
+                    "The fog presses against the window. The camera tells the story. No subject speaks — only the hallway breathes."
+                  </p>
+        
+                  <div className="space-y-2 text-sm">
+                    <div>
+                      <strong className="text-green-400">#fog presses:</strong>{" "}
+                      Mekanın duygusal bulanıklığını gösterir, yalnızlık ve geçmiş hissi verir.
+                    </div>
+                    <div>
+                      <strong className="text-green-400">#the camera tells the story:</strong>{" "}
+                      Sahne pozsuzdur. İzleyici görüntünün tanığı olur, müdahil olmaz.
+                    </div>
+                    <div>
+                      <strong className="text-green-400">#no subject:</strong>{" "}
+                      Kamera boşluğu takip eder. Sessizlik ve kayıp hissi büyür.
+                    </div>
+                  </div>
+        
+                  <div className="flex gap-2 pt-2">
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">❤️ Like</button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">➕ Add to Phrase Collection</button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">➡️ Use in Story</button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          );
     }
   };
 
