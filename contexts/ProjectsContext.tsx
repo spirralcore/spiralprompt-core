@@ -14,11 +14,13 @@ export type Project = {
 type ProjectsContextType = {
   projects: Project[];
   activeProjectId: string | null;
+  getActiveProject: () => Project | null;
   addProject: (title: string) => void;
   selectProject: (id: string) => void;
   addPhraseToProject: (phrase: string, id?: string) => void;
-  removePhraseFromProject: (phrase: string, id?: string) => void;
-  getActiveProject: () => Project | null;
+  deletePhraseFromProject: (phrase: string) => void;
+  addNoteToProject: (note: string) => void;
+  deleteNoteFromProject: (note: string) => void;
 };
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
@@ -56,6 +58,10 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     }
   }, [activeProjectId]);
 
+  const getActiveProject = () => {
+    return projects.find((p) => p.id === activeProjectId) || null;
+  };
+
   const addProject = (title: string) => {
     const newProject: Project = {
       id: `project-${Date.now()}`,
@@ -73,54 +79,68 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     setActiveProjectId(id);
   };
 
-  const getActiveProject = (): Project | null => {
-    return projects.find((p) => p.id === activeProjectId) || null;
-  };
-
   const addPhraseToProject = (phrase: string, id?: string) => {
     const targetId = id || activeProjectId;
     if (!targetId) return;
-
-    setProjects((prev) =>
-      prev.map((p) =>
-        p.id === targetId && !p.phrases.includes(phrase)
-          ? { ...p, phrases: [...p.phrases, phrase] }
-          : p
-      )
-    );
-  };
-
-  const removePhraseFromProject = (phrase: string, id?: string) => {
-    const targetId = id || activeProjectId;
-    if (!targetId) return;
-
     setProjects((prev) =>
       prev.map((p) =>
         p.id === targetId
-          ? { ...p, phrases: p.phrases.filter((t) => t !== phrase) }
+          ? p.phrases.includes(phrase)
+            ? p
+            : { ...p, phrases: [...p.phrases, phrase] }
           : p
       )
     );
   };
 
-return (
-  <ProjectsContext.Provider
-    value={{
-      projects,
-      activeProjectId,
-      addProject,
-      selectProject,
-      addPhraseToProject,
-      getActiveProject,
-      addNoteToProject,         // ✅ EKLENDİ
-      deleteNoteFromProject     // ✅ EKLENDİ
-    }}
-  >
-    {children}
-  </ProjectsContext.Provider>
-);
+  const deletePhraseFromProject = (phrase: string) => {
+    if (!activeProjectId) return;
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === activeProjectId
+          ? { ...p, phrases: p.phrases.filter((f) => f !== phrase) }
+          : p
+      )
+    );
+  };
+
+  const addNoteToProject = (note: string) => {
+    if (!activeProjectId) return;
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === activeProjectId
+          ? { ...p, journalNotes: [...p.journalNotes, note] }
+          : p
+      )
+    );
+  };
+
+  const deleteNoteFromProject = (note: string) => {
+    if (!activeProjectId) return;
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === activeProjectId
+          ? { ...p, journalNotes: p.journalNotes.filter((n) => n !== note) }
+          : p
+      )
+    );
+  };
+
+  return (
+    <ProjectsContext.Provider
+      value={{
+        projects,
+        activeProjectId,
+        getActiveProject,
+        addProject,
+        selectProject,
+        addPhraseToProject,
+        deletePhraseFromProject,
+        addNoteToProject,
+        deleteNoteFromProject,
+      }}
+    >
+      {children}
+    </ProjectsContext.Provider>
+  );
 }
-
-
-
-
