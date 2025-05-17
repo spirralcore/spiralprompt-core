@@ -19,7 +19,13 @@ function MainApp() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
-  const { addPhraseToProject, getActiveProject, removePhraseFromProject } = useProjects();
+  const {
+    projects,
+    activeProjectId,
+    getActiveProject,
+    addPhraseToProject,
+    setProjects,
+  } = useProjects();
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
@@ -149,11 +155,19 @@ function MainApp() {
                 {activeProject.phrases.map((phrase, idx) => (
                   <li
                     key={idx}
-                    className="p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700 flex justify-between items-center"
+                    className="p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700 flex justify-between"
                   >
                     <span>{phrase}</span>
                     <button
-                      onClick={() => removePhraseFromProject(phrase)}
+                      onClick={() => {
+                        const updated = projects.map((p) =>
+                          p.id === activeProject.id
+                            ? { ...p, phrases: p.phrases.filter((_, i) => i !== idx) }
+                            : p
+                        );
+                        localStorage.setItem("spiral_projects", JSON.stringify(updated));
+                        setProjects(updated);
+                      }}
                       className="ml-4 text-red-400 hover:text-red-200 text-xs"
                     >
                       ❌
