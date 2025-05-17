@@ -1,4 +1,4 @@
-'use client';
+"use client";
 
 import { useProjects } from "@/hooks/useProjects";
 import { useState } from "react";
@@ -13,6 +13,14 @@ export default function ProjectSelector() {
 
   const [newTitle, setNewTitle] = useState("");
   const [showInput, setShowInput] = useState(false);
+
+  const handleAddProject = () => {
+    const trimmed = newTitle.trim();
+    if (!trimmed) return;
+    addProject(trimmed);
+    setNewTitle("");
+    setShowInput(false);
+  };
 
   return (
     <div className="w-full p-4 bg-[#1a1a1a] border-b border-gray-700 text-white flex items-center justify-between">
@@ -29,7 +37,9 @@ export default function ProjectSelector() {
           onChange={(e) => selectProject(e.target.value)}
           className="bg-[#2a2a2a] p-2 text-sm rounded"
         >
-          <option value="" disabled>Select a project</option>
+          <option value="" disabled>
+            Select a project
+          </option>
           {projects.map((p) => (
             <option key={p.id} value={p.id}>
               {p.title}
@@ -47,13 +57,7 @@ export default function ProjectSelector() {
               className="p-2 bg-[#2a2a2a] rounded text-sm"
             />
             <button
-              onClick={() => {
-                if (newTitle.trim()) {
-                  addProject(newTitle);
-                  setNewTitle("");
-                  setShowInput(false);
-                }
-              }}
+              onClick={handleAddProject}
               className="bg-green-600 px-3 py-1 text-sm rounded"
             >
               Add
@@ -71,4 +75,3 @@ export default function ProjectSelector() {
     </div>
   );
 }
-
