@@ -14,7 +14,13 @@ export default function AddToStoryModal({
   const [selectedId, setSelectedId] = useState("");
 
   const handleAdd = () => {
-    if (!selectedId) return;
+    if (!selectedId) {
+      console.warn("⛔ No project selected");
+      return;
+    }
+
+    console.log("✅ Ekleniyor:", { phrase, selectedId });
+
     addPhraseToSpecificProject(phrase, selectedId);
     onClose();
   };
