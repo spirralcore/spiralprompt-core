@@ -1,6 +1,6 @@
 "use client";
 
-import { useProjects } from "@/hooks/useProjects";
+import { useProjects } from "@/contexts/ProjectsContext";
 import { useState } from "react";
 
 export default function ProjectSelector() {
