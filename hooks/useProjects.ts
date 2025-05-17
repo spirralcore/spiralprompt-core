@@ -15,21 +15,28 @@ export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
-  // Load from localStorage once on mount
+  // Load once on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem('spiral_projects');
       const active = localStorage.getItem('spiral_activeProjectId');
-      if (stored) setProjects(JSON.parse(stored));
+      if (stored) {
+        const parsed = JSON.parse(stored);
+        if (Array.isArray(parsed)) {
+          setProjects(parsed);
+        }
+      }
       if (active) setActiveProjectId(active);
     } catch (err) {
-      console.error("Failed to load projects from localStorage:", err);
+      console.error("Failed to load from localStorage:", err);
     }
   }, []);
 
-  // Save whenever projects state changes
+  // Save projects if valid (prevents overwriting with [])
   useEffect(() => {
-    localStorage.setItem('spiral_projects', JSON.stringify(projects));
+    if (projects.length > 0) {
+      localStorage.setItem('spiral_projects', JSON.stringify(projects));
+    }
   }, [projects]);
 
   // Save active project ID
@@ -53,17 +60,17 @@ export function useProjects() {
     setActiveProjectId(newProject.id);
   };
 
-  // Set active project
+  // Select project
   const selectProject = (id: string) => {
     setActiveProjectId(id);
   };
 
-  // Get full object of active project
+  // Get active project object
   const getActiveProject = (): Project | null => {
     return projects.find((p) => p.id === activeProjectId) || null;
   };
 
-  // Add phrase to active project
+  // Add phrase to currently selected project
   const addPhraseToProject = (phrase: string) => {
     if (!activeProjectId) return;
     setProjects((prev) =>
@@ -75,7 +82,7 @@ export function useProjects() {
     );
   };
 
-  // Add phrase to specific project
+  // Add phrase to specific project (for modal)
   const addPhraseToSpecificProject = (phrase: string, projectId: string) => {
     setProjects((prev) =>
       prev.map((p) =>
