@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
-import SceneBuilder from "@/components/SceneBuilder";
+import Storyboard from "@/components/Storyboard";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
 
@@ -121,82 +121,112 @@ function MainApp() {
           </div>
         );
 
-     switch (activeTab) {
-  case "scene":
-    return <Storyboard />;
-  case "journal":
-    if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
-    return (
-      <div className="space-y-6">
-        <h2 className="text-2xl font-bold text-white">📓 {activeProject.title} — Journal</h2>
-        <div className="flex gap-2">
-          <input
-            type="text"
-            value={noteInput}
-            onChange={(e) => setNoteInput(e.target.value)}
-            placeholder="Type a journal note..."
-            className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
-          />
-          <button
-            onClick={() => {
-              if (noteInput.trim()) {
-                addNoteToProject(noteInput.trim());
-                setNoteInput("");
-              }
-            }}
-            className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
-          >
-            Add
-          </button>
-        </div>
-        <ul className="space-y-3">
-          {activeProject.journalNotes.map((note, idx) => (
-            <li
-              key={idx}
-              className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
-            >
-              <span>{note}</span>
+      case "scene":
+        return <Storyboard />;
+
+      case "journal":
+        if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white">📓 {activeProject.title} — Journal</h2>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={noteInput}
+                onChange={(e) => setNoteInput(e.target.value)}
+                placeholder="Type a journal note..."
+                className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
+              />
               <button
-                onClick={() => deleteNoteFromProject(note)}
-                className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
+                onClick={() => {
+                  if (noteInput.trim()) {
+                    addNoteToProject(noteInput.trim());
+                    setNoteInput("");
+                  }
+                }}
+                className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
               >
-                ✖
+                Add
               </button>
-            </li>
-          ))}
-        </ul>
-      </div>
-    );
-  // diğer case'ler ...
-}
+            </div>
+            <ul className="space-y-3">
+              {activeProject.journalNotes.map((note, idx) => (
+                <li
+                  key={idx}
+                  className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
+                >
+                  <span>{note}</span>
+                  <button
+                    onClick={() => deleteNoteFromProject(note)}
+                    className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
+                  >
+                    ✖
+                  </button>
+                </li>
+              ))}
+            </ul>
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
       <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
-        <h1 className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80">
-          <button onClick={() => router.push("/landing")}>🌀 Find Your Echo</button>
+        <h1
+          className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80"
+          onClick={() => router.push("/landing")}
+        >
+          🌀 Find Your Echo
         </h1>
         <nav className="flex flex-col gap-3 text-sm">
-          <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+          <button
+            onClick={() => setActiveTab("style")}
+            className={`text-left p-3 rounded ${
+              activeTab === "style" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
+            }`}
+          >
             🌀 Find Your Style
           </button>
-          <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+          <button
+            onClick={() => setActiveTab("phrases")}
+            className={`text-left p-3 rounded ${
+              activeTab === "phrases" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
+            }`}
+          >
             💬 Create Your Prompt Phrases
           </button>
-          <button onClick={() => setActiveTab("scene")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+          <button
+            onClick={() => setActiveTab("scene")}
+            className={`text-left p-3 rounded ${
+              activeTab === "scene" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
+            }`}
+          >
             🎬 The Way to Your Scene
           </button>
-          <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+          <button
+            onClick={() => setActiveTab("journal")}
+            className={`text-left p-3 rounded ${
+              activeTab === "journal" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
+            }`}
+          >
             📓 Your Journal
           </button>
           <button
-  onClick={() => setActiveTab("storyboard")}
-  className={`text-left p-3 rounded ${
-    activeTab === "storyboard" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
-  }`}
->
-  📽️ Storyboard
-</button>
-          <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">
+            onClick={() => setActiveTab("storyboard")}
+            className={`text-left p-3 rounded ${
+              activeTab === "storyboard" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
+            }`}
+          >
+            📽️ Storyboard
+          </button>
+          <button
+            onClick={() => setActiveTab("engines")}
+            className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold"
+          >
             🎛️ Work With Your Friend Engine
           </button>
         </nav>
