@@ -15,7 +15,7 @@ export default function AddToStoryModal({
 
   const handleAdd = () => {
     if (!selectedId) return;
-    addPhraseToSpecificProject(phrase, selectedId); // ✅ direkt doğru projeye yaz
+    addPhraseToSpecificProject(phrase, selectedId);
     onClose();
   };
 
@@ -60,4 +60,3 @@ export default function AddToStoryModal({
     </div>
   );
 }
-
