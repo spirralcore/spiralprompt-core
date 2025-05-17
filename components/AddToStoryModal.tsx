@@ -1,7 +1,7 @@
 "use client";
 
 import { useProjects } from "@/hooks/useProjects";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AddToStoryModal({
   phrase,
@@ -13,16 +13,25 @@ export default function AddToStoryModal({
   const { projects, addPhraseToSpecificProject } = useProjects();
   const [selectedId, setSelectedId] = useState("");
 
+  // Modal açıldığında projeler boş mu? kontrolü
+  useEffect(() => {
+    console.log("📦 Modal açıldı, mevcut projeler:", projects);
+  }, [projects]);
+
   const handleAdd = () => {
     if (!selectedId) {
       console.warn("⛔ No project selected");
       return;
     }
 
-    console.log("✅ Ekleniyor:", { phrase, selectedId });
-
+    console.log("✅ Phrase ekleniyor:", { phrase, selectedId });
     addPhraseToSpecificProject(phrase, selectedId);
-    console.log("✅ addPhraseToSpecificProject() çağrıldı");
+    console.log("✅ addPhraseToSpecificProject çağrıldı");
+
+    setTimeout(() => {
+      const updated = localStorage.getItem("spiral_projects");
+      console.log("🧠 Güncel localStorage (projects):", updated);
+    }, 500);
 
     onClose();
   };
@@ -71,4 +80,3 @@ export default function AddToStoryModal({
     </div>
   );
 }
-
