@@ -8,7 +8,7 @@ import ProjectSelector from "@/components/ProjectSelector";
 export default function Home() {
   const [activeTab, setActiveTab] = useState("style");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { addPhraseToProject } = useProjects();
+  const { addPhraseToProject, activeProjectId } = useProjects();
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
