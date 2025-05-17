@@ -10,13 +10,12 @@ export default function AddToStoryModal({
   phrase: string;
   onClose: () => void;
 }) {
-  const { projects, addPhraseToProject, selectProject } = useProjects();
+  const { projects, addPhraseToSpecificProject } = useProjects();
   const [selectedId, setSelectedId] = useState("");
 
   const handleAdd = () => {
     if (!selectedId) return;
-    selectProject(selectedId); // aktif projeyi güncelle (isteğe bağlı)
-    addPhraseToProject(phrase);
+    addPhraseToSpecificProject(phrase, selectedId); // ✅ direkt doğru projeye yaz
     onClose();
   };
 
@@ -61,3 +60,4 @@ export default function AddToStoryModal({
     </div>
   );
 }
+
