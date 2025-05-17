@@ -1,24 +1,22 @@
 "use client";
 
 import { useProjects } from "@/contexts/ProjectsContext";
-import ProjectCard from "./ProjectCard";
 
 export default function YourEchoContainer() {
   const { projects } = useProjects();
 
-  if (projects.length === 0) {
-    return (
-      <div className="text-center text-gray-500 mt-12">
-        No projects found. Create one to begin your Echo journey.
-      </div>
-    );
-  }
-
   return (
-    <div className="grid gap-6">
-      {projects.map((project) => (
-        <ProjectCard key={project.id} project={project} />
-      ))}
-    </div>
-  );
-}
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-white">📂 Your Projects</h2>
+
+      {projects.length === 0 ? (
+        <p className="text-gray-400">You don’t have any projects yet.</p>
+      ) : (
+        <ul className="space-y-4">
+          {projects.map((project) => (
+            <li
+              key={project.id}
+              className="bg-[#1f1f1f] p-4 rounded shadow border border-gray-700 text-white"
+            >
+              <div className="text-lg font-semibold">{project.title}</div>
+              <div className="text-xs opacity-60">Created at: {new Date(project.cr
