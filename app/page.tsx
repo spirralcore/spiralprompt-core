@@ -221,9 +221,9 @@ function MainApp() {
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
       <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
-        <h1 className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80">
-          <Link href="/">🌀 Find Your Echo</Link>
-        </h1>
+<h1 className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80">
+  <Link href="/landing">🌀 Find Your Echo</Link>
+</h1>
         <nav className="flex flex-col gap-3 text-sm">
           <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">🌀 Find Your Style</button>
           <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">💬 Create Your Prompt Phrases</button>
