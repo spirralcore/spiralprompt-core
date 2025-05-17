@@ -17,6 +17,7 @@ type ProjectsContextType = {
   addProject: (title: string) => void;
   selectProject: (id: string) => void;
   addPhraseToProject: (phrase: string, id?: string) => void;
+  getActiveProject: () => Project | null; // ✅ EKLENDİ
 };
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
@@ -83,6 +84,10 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const getActiveProject = (): Project | null => {
+    return projects.find((p) => p.id === activeProjectId) || null;
+  };
+
   return (
     <ProjectsContext.Provider
       value={{
@@ -91,10 +96,12 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
         addProject,
         selectProject,
         addPhraseToProject,
+        getActiveProject, // ✅ Burada eksikti
       }}
     >
       {children}
     </ProjectsContext.Provider>
   );
 }
+
 
