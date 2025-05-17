@@ -103,21 +103,22 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  return (
-    <ProjectsContext.Provider
-      value={{
-        projects,
-        activeProjectId,
-        addProject,
-        selectProject,
-        addPhraseToProject,
-        removePhraseFromProject,
-        getActiveProject,
-      }}
-    >
-      {children}
-    </ProjectsContext.Provider>
-  );
+return (
+  <ProjectsContext.Provider
+    value={{
+      projects,
+      activeProjectId,
+      addProject,
+      selectProject,
+      addPhraseToProject,
+      getActiveProject,
+      addNoteToProject,         // ✅ EKLENDİ
+      deleteNoteFromProject     // ✅ EKLENDİ
+    }}
+  >
+    {children}
+  </ProjectsContext.Provider>
+);
 }
 
 
