@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import Link from "next/link";
 import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToStoryModal from "@/components/AddToStoryModal";
@@ -226,5 +225,19 @@ function MainApp() {
         </div>
       </div>
 
-      <main className="fle
-
+      <main className="flex-1 p-10 overflow-y-auto">
+        <ProjectSelector />
+        {renderContent()}
+        {showModal && selectedPhrase && (
+          <AddToStoryModal
+            phrase={selectedPhrase}
+            onClose={() => {
+              setShowModal(false);
+              setSelectedPhrase(null);
+            }}
+          />
+        )}
+      </main>
+    </div>
+  );
+}
