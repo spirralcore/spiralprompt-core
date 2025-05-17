@@ -3,7 +3,7 @@
 import { useProjects } from "@/contexts/ProjectsContext";
 import { useState } from "react";
 
-export default function AddToStoryModal({
+export default function AddToSceneModal({
   phrase,
   onClose,
 }: {
@@ -53,7 +53,7 @@ export default function AddToStoryModal({
             onClick={handleAdd}
             className="px-4 py-2 rounded bg-green-600 hover:bg-green-500 text-sm disabled:opacity-50"
           >
-            Add to Project
+            Add to Scene
           </button>
         </div>
       </div>
