@@ -111,7 +111,7 @@ function MainApp() {
                       }}
                       className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm"
                     >
-                      ➡️ Use in Story
+                      ➡️ Use in Scene
                     </button>
                   </div>
                 </div>
@@ -120,11 +120,11 @@ function MainApp() {
           </div>
         );
 
-      case "story":
+      case "scene":
         if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">📖 {activeProject.title}</h2>
+            <h2 className="text-2xl font-bold text-white">🎬 {activeProject.title}</h2>
             {activeProject.phrases.length === 0 ? (
               <p className="text-gray-500">No phrases added yet.</p>
             ) : (
@@ -210,8 +210,8 @@ function MainApp() {
           <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
             💬 Create Your Prompt Phrases
           </button>
-          <button onClick={() => setActiveTab("story")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
-            📖 The Way to Your Story
+          <button onClick={() => setActiveTab("scene")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+            🎬 The Way to Your Scene
           </button>
           <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
             📓 Your Journal
