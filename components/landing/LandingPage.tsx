@@ -3,7 +3,7 @@
 import { useState } from "react";
 import TopNav from "./TopNav";
 import YourEchoContainer from "./YourEchoContainer";
-// import GlobalEchoContainer from "./GlobalEchoContainer"; // sonra eklenecek
+import GlobalEchoContainer from "./GlobalEchoContainer";
 
 export default function LandingPage() {
   const [activeTab, setActiveTab] = useState<"your" | "global">("your");
@@ -13,14 +13,7 @@ export default function LandingPage() {
       <TopNav activeTab={activeTab} onTabChange={setActiveTab} />
 
       {activeTab === "your" && <YourEchoContainer />}
-
-      {activeTab === "global" && (
-        <div className="text-center text-gray-500 mt-20">
-          🌍 Global Echo is coming soon...
-        </div>
-        // TODO: <GlobalEchoContainer />
-      )}
+      {activeTab === "global" && <GlobalEchoContainer />}
     </div>
   );
 }
-
