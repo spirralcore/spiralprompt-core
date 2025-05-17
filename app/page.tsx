@@ -168,66 +168,60 @@ case "story":
   );
 
       case "journal":
-        const projectForJournal = getActiveProject();
-        const [noteInput, setNoteInput] = useState("");
+  const activeProjectForJournal = getActiveProject();
+  const [noteInput, setNoteInput] = useState("");
 
-        if (!projectForJournal) {
-          return <p className="text-gray-400">No active project selected.</p>;
-        }
+  if (!activeProjectForJournal) {
+    return <p className="text-gray-400">No active project selected.</p>;
+  }
 
-        const handleAddNote = () => {
-          if (!noteInput.trim()) return;
-          addNoteToProject(noteInput.trim());
-          setNoteInput("");
-        };
+  return (
+    <div className="space-y-6">
+      <h2 className="text-2xl font-bold text-white">📓 {activeProjectForJournal.title} — Journal</h2>
 
-        const handleDeleteNote = (noteToDelete: string) => {
-          deleteNoteFromProject(noteToDelete);
-        };
+      <div className="flex gap-2">
+        <input
+          type="text"
+          value={noteInput}
+          onChange={(e) => setNoteInput(e.target.value)}
+          placeholder="Type a journal note..."
+          className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
+        />
+        <button
+          onClick={() => {
+            if (noteInput.trim()) {
+              addNoteToProject(noteInput.trim());
+              setNoteInput("");
+            }
+          }}
+          className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
+        >
+          Add
+        </button>
+      </div>
 
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">📓 {projectForJournal.title} - Journal</h2>
-
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={noteInput}
-                onChange={(e) => setNoteInput(e.target.value)}
-                placeholder="Write a new journal note..."
-                className="flex-1 bg-[#2a2a2a] p-3 rounded text-sm text-white border border-gray-600"
-              />
+      {activeProjectForJournal.journalNotes.length === 0 ? (
+        <p className="text-gray-500">No notes yet.</p>
+      ) : (
+        <ul className="space-y-3">
+          {activeProjectForJournal.journalNotes.map((note, idx) => (
+            <li
+              key={idx}
+              className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
+            >
+              <span>{note}</span>
               <button
-                onClick={handleAddNote}
-                className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-sm"
+                onClick={() => deleteNoteFromProject(note)}
+                className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
               >
-                Add Note
+                ✖
               </button>
-            </div>
-
-            {projectForJournal.journalNotes.length === 0 ? (
-              <p className="text-gray-500">No notes yet.</p>
-            ) : (
-              <ul className="space-y-4">
-                {projectForJournal.journalNotes.map((note, idx) => (
-                  <li
-                    key={idx}
-                    className="p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700 flex justify-between items-center"
-                  >
-                    <span>{note}</span>
-                    <button
-                      onClick={() => handleDeleteNote(note)}
-                      className="text-red-400 hover:text-red-600 text-xs"
-                    >
-                      ✖
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
-          </div>
-        );
-
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
       <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
