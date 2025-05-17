@@ -2,18 +2,25 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { useProjects } from "@/hooks/useProjects";
+import { ProjectsProvider } from "@/contexts/ProjectsContext";
+import { useProjects } from "@/contexts/ProjectsContext";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToStoryModal from "@/components/AddToStoryModal";
 
 export default function Home() {
+  return (
+    <ProjectsProvider>
+      <MainApp />
+    </ProjectsProvider>
+  );
+}
+
+function MainApp() {
   const [activeTab, setActiveTab] = useState("style");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
-  const { addPhraseToProject, activeProjectId } = useProjects();
-
-  // Modal kontrolü
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
+  const { addPhraseToProject } = useProjects();
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
@@ -91,27 +98,35 @@ export default function Home() {
               className="w-full bg-gray-800 text-white p-3 rounded border border-gray-600"
             />
 
-            {[1, 2, 3, 4, 5].map((_, idx) => {
-              const phrase = "The fog presses against the window. The camera tells the story. No subject speaks — only the hallway breathes.";
+            {[1, 2, 3].map((_, idx) => {
+              const phrase =
+                "The fog presses against the window. The camera tells the story. No subject speaks — only the hallway breathes.";
               return (
-                <div key={idx} className="bg-[#1f1f1f] p-4 rounded shadow space-y-4">
+                <div
+                  key={idx}
+                  className="bg-[#1f1f1f] p-4 rounded shadow space-y-4"
+                >
                   <p className="text-white">"{phrase}"</p>
-
                   <div className="space-y-2 text-sm">
                     <div>
-                      <strong className="text-green-400">#fog presses:</strong> Mekanın duygusal bulanıklığını gösterir, yalnızlık ve geçmiş hissi verir.
+                      <strong className="text-green-400">#fog presses:</strong>{" "}
+                      Mekanın duygusal bulanıklığını gösterir.
                     </div>
                     <div>
-                      <strong className="text-green-400">#the camera tells the story:</strong> Sahne pozsuzdur. İzleyici görüntünün tanığı olur, müdahil olmaz.
-                    </div>
-                    <div>
-                      <strong className="text-green-400">#no subject:</strong> Kamera boşluğu takip eder. Sessizlik ve kayıp hissi büyür.
+                      <strong className="text-green-400">
+                        #the camera tells the story:
+                      </strong>{" "}
+                      Kamera sahneyi anlatır, kimse poz vermez.
                     </div>
                   </div>
 
                   <div className="flex gap-2 pt-2">
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">❤️ Like</button>
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">➕ Add to Phrase Collection</button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
+                      ❤️ Like
+                    </button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
+                      ➕ Add to Phrase Collection
+                    </button>
                     <button
                       onClick={() => {
                         setSelectedPhrase(phrase);
@@ -138,11 +153,36 @@ export default function Home() {
         </h1>
 
         <nav className="flex flex-col gap-3 text-sm">
-          <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">🌀 Find Your Style</button>
-          <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">💬 Create Your Prompt Phrases</button>
-          <button onClick={() => setActiveTab("story")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📖 The Way to Your Story</button>
-          <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📓 Your Journal</button>
-          <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">🎛️ Work With Your Friend Engine</button>
+          <button
+            onClick={() => setActiveTab("style")}
+            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
+          >
+            🌀 Find Your Style
+          </button>
+          <button
+            onClick={() => setActiveTab("phrases")}
+            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
+          >
+            💬 Create Your Prompt Phrases
+          </button>
+          <button
+            onClick={() => setActiveTab("story")}
+            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
+          >
+            📖 The Way to Your Story
+          </button>
+          <button
+            onClick={() => setActiveTab("journal")}
+            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
+          >
+            📓 Your Journal
+          </button>
+          <button
+            onClick={() => setActiveTab("engines")}
+            className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold"
+          >
+            🎛️ Work With Your Friend Engine
+          </button>
         </nav>
 
         <div className="mt-auto text-xs opacity-50 pt-4 border-t border-gray-600">
@@ -154,7 +194,6 @@ export default function Home() {
         <ProjectSelector />
         {renderContent()}
 
-        {/* Modal: sadece showModal true olduğunda görünür */}
         {showModal && selectedPhrase && (
           <AddToStoryModal
             phrase={selectedPhrase}
@@ -168,4 +207,3 @@ export default function Home() {
     </div>
   );
 }
-
