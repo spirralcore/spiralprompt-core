@@ -2,8 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { ProjectsProvider } from "@/contexts/ProjectsContext";
-import { useProjects } from "@/contexts/ProjectsContext";
+import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToStoryModal from "@/components/AddToStoryModal";
 
@@ -20,7 +19,7 @@ function MainApp() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
-  const { addPhraseToProject } = useProjects();
+  const { addPhraseToProject, getActiveProject } = useProjects();
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
@@ -53,7 +52,6 @@ function MainApp() {
               placeholder="#tag gir ya da whatever you feel..."
               className="w-full bg-gray-800 text-white p-3 rounded border border-gray-600"
             />
-
             <div className="grid grid-cols-2 gap-6">
               {Object.entries(categories).map(([title, tags]) => (
                 <div key={title} className="bg-[#1f1f1f] p-4 rounded shadow">
@@ -76,7 +74,6 @@ function MainApp() {
                 </div>
               ))}
             </div>
-
             <div className="pt-4">
               <button
                 disabled={selectedTags.length === 0}
@@ -97,15 +94,11 @@ function MainApp() {
               placeholder="Whisper your words... (or let the style speak for you)"
               className="w-full bg-gray-800 text-white p-3 rounded border border-gray-600"
             />
-
             {[1, 2, 3].map((_, idx) => {
               const phrase =
                 "The fog presses against the window. The camera tells the story. No subject speaks — only the hallway breathes.";
               return (
-                <div
-                  key={idx}
-                  className="bg-[#1f1f1f] p-4 rounded shadow space-y-4"
-                >
+                <div key={idx} className="bg-[#1f1f1f] p-4 rounded shadow space-y-4">
                   <p className="text-white">"{phrase}"</p>
                   <div className="space-y-2 text-sm">
                     <div>
@@ -113,13 +106,10 @@ function MainApp() {
                       Mekanın duygusal bulanıklığını gösterir.
                     </div>
                     <div>
-                      <strong className="text-green-400">
-                        #the camera tells the story:
-                      </strong>{" "}
+                      <strong className="text-green-400">#the camera tells the story:</strong>{" "}
                       Kamera sahneyi anlatır, kimse poz vermez.
                     </div>
                   </div>
-
                   <div className="flex gap-2 pt-2">
                     <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
                       ❤️ Like
@@ -142,9 +132,8 @@ function MainApp() {
             })}
           </div>
         );
-    }
-  };
-case "story":
+
+      case "story":
         const activeProject = getActiveProject();
         if (!activeProject) {
           return <p className="text-gray-400">No active project selected.</p>;
@@ -153,7 +142,6 @@ case "story":
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">📖 {activeProject.title}</h2>
-
             {activeProject.phrases.length === 0 ? (
               <p className="text-gray-500">No phrases added to this story yet.</p>
             ) : (
@@ -179,40 +167,13 @@ case "story":
         <h1 className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80">
           <Link href="/">🌀 Find Your Echo</Link>
         </h1>
-
         <nav className="flex flex-col gap-3 text-sm">
-          <button
-            onClick={() => setActiveTab("style")}
-            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
-          >
-            🌀 Find Your Style
-          </button>
-          <button
-            onClick={() => setActiveTab("phrases")}
-            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
-          >
-            💬 Create Your Prompt Phrases
-          </button>
-          <button
-            onClick={() => setActiveTab("story")}
-            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
-          >
-            📖 The Way to Your Story
-          </button>
-          <button
-            onClick={() => setActiveTab("journal")}
-            className="text-left p-3 bg-[#222] hover:bg-[#333] rounded"
-          >
-            📓 Your Journal
-          </button>
-          <button
-            onClick={() => setActiveTab("engines")}
-            className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold"
-          >
-            🎛️ Work With Your Friend Engine
-          </button>
+          <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">🌀 Find Your Style</button>
+          <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">💬 Create Your Prompt Phrases</button>
+          <button onClick={() => setActiveTab("story")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📖 The Way to Your Story</button>
+          <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📓 Your Journal</button>
+          <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">🎛️ Work With Your Friend Engine</button>
         </nav>
-
         <div className="mt-auto text-xs opacity-50 pt-4 border-t border-gray-600">
           Powered by SpiralPrompt Engine © 2025
         </div>
@@ -221,7 +182,6 @@ case "story":
       <main className="flex-1 p-10 overflow-y-auto">
         <ProjectSelector />
         {renderContent()}
-
         {showModal && selectedPhrase && (
           <AddToStoryModal
             phrase={selectedPhrase}
