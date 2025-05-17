@@ -160,46 +160,58 @@ function MainApp() {
         );
 
       case "journal":
-        const journalProject = getActiveProject();
-        if (!journalProject) {
+        const projectForJournal = getActiveProject();
+        const [noteInput, setNoteInput] = useState("");
+
+        if (!projectForJournal) {
           return <p className="text-gray-400">No active project selected.</p>;
         }
+
+        const handleAddNote = () => {
+          if (!noteInput.trim()) return;
+          addNoteToProject(noteInput.trim());
+          setNoteInput("");
+        };
+
+        const handleDeleteNote = (noteToDelete: string) => {
+          deleteNoteFromProject(noteToDelete);
+        };
+
         return (
           <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">📓 {journalProject.title}</h2>
-            <textarea
-              value={noteInput}
-              onChange={(e) => setNoteInput(e.target.value)}
-              className="w-full p-3 bg-[#1f1f1f] border border-gray-700 text-sm text-white rounded"
-              rows={3}
-              placeholder="Type your journal note here..."
-            ></textarea>
-            <button
-              onClick={() => {
-                if (noteInput.trim()) {
-                  addNoteToProject(noteInput.trim());
-                  setNoteInput("");
-                }
-              }}
-              className="bg-blue-600 px-4 py-2 text-sm rounded hover:bg-blue-500"
-            >
-              📓 Add Note
-            </button>
-            {journalProject.journalNotes.length === 0 ? (
+            <h2 className="text-2xl font-bold text-white">📓 {projectForJournal.title} - Journal</h2>
+
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={noteInput}
+                onChange={(e) => setNoteInput(e.target.value)}
+                placeholder="Write a new journal note..."
+                className="flex-1 bg-[#2a2a2a] p-3 rounded text-sm text-white border border-gray-600"
+              />
+              <button
+                onClick={handleAddNote}
+                className="bg-green-600 hover:bg-green-500 px-4 py-2 rounded text-sm"
+              >
+                Add Note
+              </button>
+            </div>
+
+            {projectForJournal.journalNotes.length === 0 ? (
               <p className="text-gray-500">No notes yet.</p>
             ) : (
               <ul className="space-y-4">
-                {journalProject.journalNotes.map((note, idx) => (
+                {projectForJournal.journalNotes.map((note, idx) => (
                   <li
                     key={idx}
                     className="p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700 flex justify-between items-center"
                   >
                     <span>{note}</span>
                     <button
-                      onClick={() => removeNoteFromProject(note)}
+                      onClick={() => handleDeleteNote(note)}
                       className="text-red-400 hover:text-red-600 text-xs"
                     >
-                      ❌
+                      ✖
                     </button>
                   </li>
                 ))}
@@ -207,8 +219,6 @@ function MainApp() {
             )}
           </div>
         );
-    }
-  };
 
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
