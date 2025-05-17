@@ -19,14 +19,15 @@ function MainApp() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
-  const {
-    addPhraseToProject,
-    getActiveProject,
-    addNoteToProject,
-    removeNoteFromProject,
-  } = useProjects();
-
   const [noteInput, setNoteInput] = useState("");
+
+  const {
+    getActiveProject,
+    addPhraseToProject,
+    deletePhraseFromProject,
+    addNoteToProject,
+    deleteNoteFromProject,
+  } = useProjects();
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
@@ -50,6 +51,8 @@ function MainApp() {
   };
 
   const renderContent = () => {
+    const activeProject = getActiveProject();
+
     switch (activeTab) {
       case "style":
         return (
@@ -107,17 +110,13 @@ function MainApp() {
               return (
                 <div key={idx} className="bg-[#1f1f1f] p-4 rounded shadow space-y-4">
                   <p className="text-white">"{phrase}"</p>
-                  <div className="space-y-2 text-sm">
-                    <div>
-                      <strong className="text-green-400">#fog presses:</strong> Mekanın duygusal bulanıklığını gösterir.
-                    </div>
-                    <div>
-                      <strong className="text-green-400">#the camera tells the story:</strong> Kamera sahneyi anlatır, kimse poz vermez.
-                    </div>
-                  </div>
                   <div className="flex gap-2 pt-2">
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">❤️ Like</button>
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">➕ Add to Phrase Collection</button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
+                      ❤️ Like
+                    </button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
+                      ➕ Add to Phrase Collection
+                    </button>
                     <button
                       onClick={() => {
                         setSelectedPhrase(phrase);
@@ -134,94 +133,91 @@ function MainApp() {
           </div>
         );
 
-case "story":
-  const activeProject = getActiveProject();
-  if (!activeProject) {
-    return <p className="text-gray-400">No active project selected.</p>;
-  }
-
-  return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white">📖 {activeProject.title}</h2>
-
-      {activeProject.phrases.length === 0 ? (
-        <p className="text-gray-500">No phrases added to this story yet.</p>
-      ) : (
-        <ul className="space-y-4">
-          {activeProject.phrases.map((phrase, idx) => (
-            <li
-              key={idx}
-              className="relative p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700"
-            >
-              <span>{phrase}</span>
-              <button
-                onClick={() => deletePhraseFromProject(phrase)}
-                className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
-              >
-                ✖
-              </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+      case "story":
+        if (!activeProject) {
+          return <p className="text-gray-400">No active project selected.</p>;
+        }
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white">📖 {activeProject.title}</h2>
+            {activeProject.phrases.length === 0 ? (
+              <p className="text-gray-500">No phrases added to this story yet.</p>
+            ) : (
+              <ul className="space-y-4">
+                {activeProject.phrases.map((phrase, idx) => (
+                  <li
+                    key={idx}
+                    className="relative p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700"
+                  >
+                    <span>{phrase}</span>
+                    <button
+                      onClick={() => deletePhraseFromProject(phrase)}
+                      className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
+                    >
+                      ✖
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
 
       case "journal":
-  const activeProjectForJournal = getActiveProject();
-  const [noteInput, setNoteInput] = useState("");
-
-  if (!activeProjectForJournal) {
-    return <p className="text-gray-400">No active project selected.</p>;
-  }
-
-  return (
-    <div className="space-y-6">
-      <h2 className="text-2xl font-bold text-white">📓 {activeProjectForJournal.title} — Journal</h2>
-
-      <div className="flex gap-2">
-        <input
-          type="text"
-          value={noteInput}
-          onChange={(e) => setNoteInput(e.target.value)}
-          placeholder="Type a journal note..."
-          className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
-        />
-        <button
-          onClick={() => {
-            if (noteInput.trim()) {
-              addNoteToProject(noteInput.trim());
-              setNoteInput("");
-            }
-          }}
-          className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
-        >
-          Add
-        </button>
-      </div>
-
-      {activeProjectForJournal.journalNotes.length === 0 ? (
-        <p className="text-gray-500">No notes yet.</p>
-      ) : (
-        <ul className="space-y-3">
-          {activeProjectForJournal.journalNotes.map((note, idx) => (
-            <li
-              key={idx}
-              className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
-            >
-              <span>{note}</span>
+        if (!activeProject) {
+          return <p className="text-gray-400">No active project selected.</p>;
+        }
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white">📓 {activeProject.title} — Journal</h2>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                value={noteInput}
+                onChange={(e) => setNoteInput(e.target.value)}
+                placeholder="Type a journal note..."
+                className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
+              />
               <button
-                onClick={() => deleteNoteFromProject(note)}
-                className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
+                onClick={() => {
+                  if (noteInput.trim()) {
+                    addNoteToProject(noteInput.trim());
+                    setNoteInput("");
+                  }
+                }}
+                className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
               >
-                ✖
+                Add
               </button>
-            </li>
-          ))}
-        </ul>
-      )}
-    </div>
-  );
+            </div>
+            {activeProject.journalNotes.length === 0 ? (
+              <p className="text-gray-500">No notes yet.</p>
+            ) : (
+              <ul className="space-y-3">
+                {activeProject.journalNotes.map((note, idx) => (
+                  <li
+                    key={idx}
+                    className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
+                  >
+                    <span>{note}</span>
+                    <button
+                      onClick={() => deleteNoteFromProject(note)}
+                      className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
+                    >
+                      ✖
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
+
+      default:
+        return null;
+    }
+  };
+
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
       <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
@@ -239,7 +235,6 @@ case "story":
           Powered by SpiralPrompt Engine © 2025
         </div>
       </div>
-
       <main className="flex-1 p-10 overflow-y-auto">
         <ProjectSelector />
         {renderContent()}
@@ -256,4 +251,3 @@ case "story":
     </div>
   );
 }
-
