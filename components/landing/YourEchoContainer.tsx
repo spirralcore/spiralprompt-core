@@ -1,6 +1,7 @@
 "use client";
 
 import { useProjects } from "@/contexts/ProjectsContext";
+import ProjectCard from "./ProjectCard";
 
 export default function YourEchoContainer() {
   const { projects } = useProjects();
@@ -12,14 +13,10 @@ export default function YourEchoContainer() {
       {projects.length === 0 ? (
         <p className="text-gray-400">You don’t have any projects yet.</p>
       ) : (
-        <ul className="space-y-4">
+        <ul className="space-y-6">
           {projects.map((project) => (
-            <li
-              key={project.id}
-              className="bg-[#1f1f1f] p-4 rounded shadow border border-gray-700 text-white"
-            >
-              <div className="text-lg font-semibold">{project.title}</div>
-              <div className="text-xs opacity-60">Created at: {new Date(project.createdAt).toLocaleString()}</div>
+            <li key={project.id}>
+              <ProjectCard project={project} />
             </li>
           ))}
         </ul>
