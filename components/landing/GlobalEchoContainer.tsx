@@ -12,7 +12,8 @@ const dummyGlobalProjects = [
       "A forgotten name echoes through the ruins."
     ],
     journalNotes: [],
-    engineLogs: []
+    engineLogs: [],
+    scenes: [],
   },
   {
     id: "global-2",
@@ -23,7 +24,8 @@ const dummyGlobalProjects = [
       "Every silence was a question the void refused to answer."
     ],
     journalNotes: [],
-    engineLogs: []
+    engineLogs: [],
+    scenes: [],
   }
 ];
 
