@@ -19,7 +19,8 @@ function MainApp() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
-  const { addPhraseToProject, getActiveProject } = useProjects();
+  const { addPhraseToProject, projects, activeProjectId } = useProjects();
+const activeProject = projects.find(p => p.id === activeProjectId);
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
