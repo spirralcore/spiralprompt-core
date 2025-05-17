@@ -17,6 +17,7 @@ type ProjectsContextType = {
   addProject: (title: string) => void;
   selectProject: (id: string) => void;
   addPhraseToProject: (phrase: string, id?: string) => void;
+  removePhraseFromProject: (phrase: string, id?: string) => void;
   getActiveProject: () => Project | null;
 };
 
@@ -32,7 +33,6 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
-  // Load from localStorage once
   useEffect(() => {
     try {
       const stored = localStorage.getItem('spiral_projects');
@@ -44,21 +44,18 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Save projects
   useEffect(() => {
     if (projects.length > 0) {
       localStorage.setItem('spiral_projects', JSON.stringify(projects));
     }
   }, [projects]);
 
-  // Save activeProjectId
   useEffect(() => {
     if (activeProjectId) {
       localStorage.setItem('spiral_activeProjectId', activeProjectId);
     }
   }, [activeProjectId]);
 
-  // ✅ Add new project
   const addProject = (title: string) => {
     const newProject: Project = {
       id: `project-${Date.now()}`,
@@ -72,29 +69,37 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     setActiveProjectId(newProject.id);
   };
 
-  // ✅ Select active project
   const selectProject = (id: string) => {
     setActiveProjectId(id);
   };
 
-  // ✅ Get current project object
   const getActiveProject = (): Project | null => {
     return projects.find((p) => p.id === activeProjectId) || null;
   };
 
-  // ✅ Add phrase, prevent duplicates
   const addPhraseToProject = (phrase: string, id?: string) => {
     const targetId = id || activeProjectId;
     if (!targetId) return;
 
     setProjects((prev) =>
-      prev.map((p) => {
-        if (p.id === targetId) {
-          if (p.phrases.includes(phrase)) return p;
-          return { ...p, phrases: [...p.phrases, phrase] };
-        }
-        return p;
-      })
+      prev.map((p) =>
+        p.id === targetId && !p.phrases.includes(phrase)
+          ? { ...p, phrases: [...p.phrases, phrase] }
+          : p
+      )
+    );
+  };
+
+  const removePhraseFromProject = (phrase: string, id?: string) => {
+    const targetId = id || activeProjectId;
+    if (!targetId) return;
+
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === targetId
+          ? { ...p, phrases: p.phrases.filter((t) => t !== phrase) }
+          : p
+      )
     );
   };
 
@@ -106,6 +111,7 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
         addProject,
         selectProject,
         addPhraseToProject,
+        removePhraseFromProject,
         getActiveProject,
       }}
     >
@@ -113,6 +119,7 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     </ProjectsContext.Provider>
   );
 }
+
 
 
 
