@@ -22,6 +22,8 @@ export default function AddToStoryModal({
     console.log("✅ Ekleniyor:", { phrase, selectedId });
 
     addPhraseToSpecificProject(phrase, selectedId);
+    console.log("✅ addPhraseToSpecificProject() çağrıldı");
+
     onClose();
   };
 
@@ -35,7 +37,10 @@ export default function AddToStoryModal({
         ) : (
           <select
             value={selectedId}
-            onChange={(e) => setSelectedId(e.target.value)}
+            onChange={(e) => {
+              console.log("📌 Project seçildi:", e.target.value);
+              setSelectedId(e.target.value);
+            }}
             className="w-full p-2 rounded bg-[#2a2a2a] text-sm"
           >
             <option value="">-- Select Project --</option>
@@ -66,3 +71,4 @@ export default function AddToStoryModal({
     </div>
   );
 }
+
