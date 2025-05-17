@@ -4,7 +4,7 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
 import ProjectSelector from "@/components/ProjectSelector";
-import AddToStoryModal from "@/components/AddToStoryModal";
+import AddToSceneModal from "@/components/AddToSceneModal";
 
 export default function Home() {
   return (
