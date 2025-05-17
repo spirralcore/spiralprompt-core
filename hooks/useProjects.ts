@@ -15,7 +15,7 @@ export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
-  // Load once on mount
+  // Load from localStorage once on mount
   useEffect(() => {
     try {
       const stored = localStorage.getItem('spiral_projects');
@@ -28,13 +28,15 @@ export function useProjects() {
       }
       if (active) setActiveProjectId(active);
     } catch (err) {
-      console.error("Failed to load from localStorage:", err);
+      console.error("❌ Error loading from localStorage:", err);
     }
   }, []);
 
-  // Save projects if valid (prevents overwriting with [])
+  // Save whenever projects change, but only if non-empty
   useEffect(() => {
-    if (projects.length > 0) {
+    const valid = projects.length > 0 && projects.some(p => p.id && p.title);
+    if (valid) {
+      console.log("💾 Saving to localStorage:", projects);
       localStorage.setItem('spiral_projects', JSON.stringify(projects));
     }
   }, [projects]);
@@ -46,7 +48,6 @@ export function useProjects() {
     }
   }, [activeProjectId]);
 
-  // Add new project
   const addProject = (title: string) => {
     const newProject: Project = {
       id: `project-${Date.now()}`,
@@ -56,41 +57,42 @@ export function useProjects() {
       journalNotes: [],
       engineLogs: [],
     };
-    setProjects((prev) => [...prev, newProject]);
+    console.log("➕ Yeni proje ekleniyor:", newProject);
+    setProjects((prev) => {
+      const updated = [...prev, newProject];
+      localStorage.setItem('spiral_projects', JSON.stringify(updated)); // 💾 hemen yaz
+      return updated;
+    });
     setActiveProjectId(newProject.id);
+    localStorage.setItem('spiral_activeProjectId', newProject.id);
   };
 
-  // Select project
   const selectProject = (id: string) => {
     setActiveProjectId(id);
+    localStorage.setItem('spiral_activeProjectId', id);
   };
 
-  // Get active project object
   const getActiveProject = (): Project | null => {
     return projects.find((p) => p.id === activeProjectId) || null;
   };
 
-  // Add phrase to currently selected project
   const addPhraseToProject = (phrase: string) => {
     if (!activeProjectId) return;
-    setProjects((prev) =>
-      prev.map((p) =>
-        p.id === activeProjectId
-          ? { ...p, phrases: [...p.phrases, phrase] }
-          : p
-      )
-    );
+    addPhraseToSpecificProject(phrase, activeProjectId);
   };
 
-  // Add phrase to specific project (for modal)
   const addPhraseToSpecificProject = (phrase: string, projectId: string) => {
-    setProjects((prev) =>
-      prev.map((p) =>
+    console.log("✍️ Phrase ekleniyor:", { phrase, projectId });
+
+    setProjects((prev) => {
+      const updated = prev.map((p) =>
         p.id === projectId
           ? { ...p, phrases: [...p.phrases, phrase] }
           : p
-      )
-    );
+      );
+      localStorage.setItem('spiral_projects', JSON.stringify(updated)); // 💾 hemen yaz
+      return updated;
+    });
   };
 
   return {
