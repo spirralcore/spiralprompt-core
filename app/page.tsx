@@ -19,9 +19,7 @@ function MainApp() {
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
-  const { addPhraseToProject, projects, activeProjectId } = useProjects();
-
-  const activeProject = projects.find(p => p.id === activeProjectId);
+  const { addPhraseToProject, getActiveProject } = useProjects();
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
@@ -33,7 +31,7 @@ function MainApp() {
     "Elemental Mood": ["silence", "wind", "fire", "storm", "ash"],
     "Visual Style": ["fragmented", "minimal", "baroque", "sublime", "void-based"],
     "Spiral Signature": ["broken becoming", "names with meaning", "silence before impact", "the seen unseen", "echoed entry"],
-    "Emotional Core": ["shame", "longing", "paranoia", "curiosity", "sacred resentment"]
+    "Emotional Core": ["shame", "longing", "paranoia", "curiosity", "sacred resentment"],
   };
 
   const toggleTag = (tag: string) => {
@@ -104,10 +102,12 @@ function MainApp() {
                   <p className="text-white">"{phrase}"</p>
                   <div className="space-y-2 text-sm">
                     <div>
-                      <strong className="text-green-400">#fog presses:</strong> Mekanın duygusal bulanıklığını gösterir.
+                      <strong className="text-green-400">#fog presses:</strong>{" "}
+                      Mekanın duygusal bulanıklığını gösterir.
                     </div>
                     <div>
-                      <strong className="text-green-400">#the camera tells the story:</strong> Kamera sahneyi anlatır, kimse poz vermez.
+                      <strong className="text-green-400">#the camera tells the story:</strong>{" "}
+                      Kamera sahneyi anlatır, kimse poz vermez.
                     </div>
                   </div>
                   <div className="flex gap-2 pt-2">
@@ -134,9 +134,11 @@ function MainApp() {
         );
 
       case "story":
+        const activeProject = getActiveProject();
         if (!activeProject) {
           return <p className="text-gray-400">No active project selected.</p>;
         }
+
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">📖 {activeProject.title}</h2>
@@ -166,21 +168,11 @@ function MainApp() {
           <Link href="/">🌀 Find Your Echo</Link>
         </h1>
         <nav className="flex flex-col gap-3 text-sm">
-          <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
-            🌀 Find Your Style
-          </button>
-          <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
-            💬 Create Your Prompt Phrases
-          </button>
-          <button onClick={() => setActiveTab("story")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
-            📖 The Way to Your Story
-          </button>
-          <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
-            📓 Your Journal
-          </button>
-          <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">
-            🎛️ Work With Your Friend Engine
-          </button>
+          <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">🌀 Find Your Style</button>
+          <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">💬 Create Your Prompt Phrases</button>
+          <button onClick={() => setActiveTab("story")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📖 The Way to Your Story</button>
+          <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📓 Your Journal</button>
+          <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">🎛️ Work With Your Friend Engine</button>
         </nav>
         <div className="mt-auto text-xs opacity-50 pt-4 border-t border-gray-600">
           Powered by SpiralPrompt Engine © 2025
