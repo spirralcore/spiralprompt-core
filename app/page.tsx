@@ -121,57 +121,54 @@ function MainApp() {
           </div>
         );
 
-     case "scene":
-  return <SceneBuilder />;
-      case "journal":
-        if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">📓 {activeProject.title} — Journal</h2>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={noteInput}
-                onChange={(e) => setNoteInput(e.target.value)}
-                placeholder="Type a journal note..."
-                className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
-              />
+     switch (activeTab) {
+  case "scene":
+    return <Storyboard />;
+  case "journal":
+    if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
+    return (
+      <div className="space-y-6">
+        <h2 className="text-2xl font-bold text-white">📓 {activeProject.title} — Journal</h2>
+        <div className="flex gap-2">
+          <input
+            type="text"
+            value={noteInput}
+            onChange={(e) => setNoteInput(e.target.value)}
+            placeholder="Type a journal note..."
+            className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
+          />
+          <button
+            onClick={() => {
+              if (noteInput.trim()) {
+                addNoteToProject(noteInput.trim());
+                setNoteInput("");
+              }
+            }}
+            className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
+          >
+            Add
+          </button>
+        </div>
+        <ul className="space-y-3">
+          {activeProject.journalNotes.map((note, idx) => (
+            <li
+              key={idx}
+              className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
+            >
+              <span>{note}</span>
               <button
-                onClick={() => {
-                  if (noteInput.trim()) {
-                    addNoteToProject(noteInput.trim());
-                    setNoteInput("");
-                  }
-                }}
-                className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
+                onClick={() => deleteNoteFromProject(note)}
+                className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
               >
-                Add
+                ✖
               </button>
-            </div>
-            <ul className="space-y-3">
-              {activeProject.journalNotes.map((note, idx) => (
-                <li
-                  key={idx}
-                  className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
-                >
-                  <span>{note}</span>
-                  <button
-                    onClick={() => deleteNoteFromProject(note)}
-                    className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
-                  >
-                    ✖
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-
-      default:
-        return null;
-    }
-  };
-
+            </li>
+          ))}
+        </ul>
+      </div>
+    );
+  // diğer case'ler ...
+}
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
       <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
@@ -191,6 +188,14 @@ function MainApp() {
           <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
             📓 Your Journal
           </button>
+          <button
+  onClick={() => setActiveTab("storyboard")}
+  className={`text-left p-3 rounded ${
+    activeTab === "storyboard" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
+  }`}
+>
+  📽️ Storyboard
+</button>
           <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">
             🎛️ Work With Your Friend Engine
           </button>
