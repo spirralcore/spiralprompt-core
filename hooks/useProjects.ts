@@ -60,6 +60,15 @@ export function useProjects() {
     );
   };
 
+  // ✅ YENİ: Belirli bir projeye phrase ekle
+  const addPhraseToSpecificProject = (phrase: string, projectId: string) => {
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === projectId ? { ...p, phrases: [...p.phrases, phrase] } : p
+      )
+    );
+  };
+
   return {
     projects,
     activeProjectId,
@@ -67,6 +76,6 @@ export function useProjects() {
     addProject,
     selectProject,
     addPhraseToProject,
+    addPhraseToSpecificProject, // ✅ bunu unutma
   };
 }
-
