@@ -20,12 +20,13 @@ function MainApp() {
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
   const {
-    projects,
-    activeProjectId,
-    getActiveProject,
     addPhraseToProject,
-    setProjects,
+    getActiveProject,
+    addNoteToProject,
+    removeNoteFromProject,
   } = useProjects();
+
+  const [noteInput, setNoteInput] = useState("");
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
@@ -108,21 +109,15 @@ function MainApp() {
                   <p className="text-white">"{phrase}"</p>
                   <div className="space-y-2 text-sm">
                     <div>
-                      <strong className="text-green-400">#fog presses:</strong>{" "}
-                      Mekanın duygusal bulanıklığını gösterir.
+                      <strong className="text-green-400">#fog presses:</strong> Mekanın duygusal bulanıklığını gösterir.
                     </div>
                     <div>
-                      <strong className="text-green-400">#the camera tells the story:</strong>{" "}
-                      Kamera sahneyi anlatır, kimse poz vermez.
+                      <strong className="text-green-400">#the camera tells the story:</strong> Kamera sahneyi anlatır, kimse poz vermez.
                     </div>
                   </div>
                   <div className="flex gap-2 pt-2">
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
-                      ❤️ Like
-                    </button>
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
-                      ➕ Add to Phrase Collection
-                    </button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">❤️ Like</button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">➕ Add to Phrase Collection</button>
                     <button
                       onClick={() => {
                         setSelectedPhrase(phrase);
@@ -144,7 +139,6 @@ function MainApp() {
         if (!activeProject) {
           return <p className="text-gray-400">No active project selected.</p>;
         }
-
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">📖 {activeProject.title}</h2>
@@ -155,20 +149,55 @@ function MainApp() {
                 {activeProject.phrases.map((phrase, idx) => (
                   <li
                     key={idx}
-                    className="p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700 flex justify-between"
+                    className="p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700 flex justify-between items-center"
                   >
                     <span>{phrase}</span>
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        );
+
+      case "journal":
+        const journalProject = getActiveProject();
+        if (!journalProject) {
+          return <p className="text-gray-400">No active project selected.</p>;
+        }
+        return (
+          <div className="space-y-6">
+            <h2 className="text-2xl font-bold text-white">📓 {journalProject.title}</h2>
+            <textarea
+              value={noteInput}
+              onChange={(e) => setNoteInput(e.target.value)}
+              className="w-full p-3 bg-[#1f1f1f] border border-gray-700 text-sm text-white rounded"
+              rows={3}
+              placeholder="Type your journal note here..."
+            ></textarea>
+            <button
+              onClick={() => {
+                if (noteInput.trim()) {
+                  addNoteToProject(noteInput.trim());
+                  setNoteInput("");
+                }
+              }}
+              className="bg-blue-600 px-4 py-2 text-sm rounded hover:bg-blue-500"
+            >
+              📓 Add Note
+            </button>
+            {journalProject.journalNotes.length === 0 ? (
+              <p className="text-gray-500">No notes yet.</p>
+            ) : (
+              <ul className="space-y-4">
+                {journalProject.journalNotes.map((note, idx) => (
+                  <li
+                    key={idx}
+                    className="p-4 bg-[#1f1f1f] rounded shadow text-sm text-white border border-gray-700 flex justify-between items-center"
+                  >
+                    <span>{note}</span>
                     <button
-                      onClick={() => {
-                        const updated = projects.map((p) =>
-                          p.id === activeProject.id
-                            ? { ...p, phrases: p.phrases.filter((_, i) => i !== idx) }
-                            : p
-                        );
-                        localStorage.setItem("spiral_projects", JSON.stringify(updated));
-                        setProjects(updated);
-                      }}
-                      className="ml-4 text-red-400 hover:text-red-200 text-xs"
+                      onClick={() => removeNoteFromProject(note)}
+                      className="text-red-400 hover:text-red-600 text-xs"
                     >
                       ❌
                     </button>
@@ -215,3 +244,4 @@ function MainApp() {
     </div>
   );
 }
+
