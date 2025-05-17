@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
 import ProjectSelector from "@/components/ProjectSelector";
@@ -15,6 +16,7 @@ export default function Home() {
 }
 
 function MainApp() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("style");
   const [selectedTags, setSelectedTags] = useState<string[]>([]);
   const [showModal, setShowModal] = useState(false);
@@ -28,6 +30,8 @@ function MainApp() {
     addNoteToProject,
     deleteNoteFromProject,
   } = useProjects();
+
+  const activeProject = getActiveProject();
 
   const categories = {
     "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
@@ -51,8 +55,6 @@ function MainApp() {
   };
 
   const renderContent = () => {
-    const activeProject = getActiveProject();
-
     switch (activeTab) {
       case "style":
         return (
@@ -84,15 +86,6 @@ function MainApp() {
                 </div>
               ))}
             </div>
-            <div className="pt-4">
-              <button
-                disabled={selectedTags.length === 0}
-                onClick={() => console.log("Seçilen tagler:", selectedTags)}
-                className="bg-green-600 px-4 py-2 rounded disabled:opacity-50"
-              >
-                🚀 Build Prompt
-              </button>
-            </div>
           </div>
         );
 
@@ -101,22 +94,17 @@ function MainApp() {
           <div className="space-y-6">
             <input
               type="text"
-              placeholder="Whisper your words... (or let the style speak for you)"
+              placeholder="Whisper your words..."
               className="w-full bg-gray-800 text-white p-3 rounded border border-gray-600"
             />
             {[1, 2, 3].map((_, idx) => {
-              const phrase =
-                "The fog presses against the window. The camera tells the story. No subject speaks — only the hallway breathes.";
+              const phrase = "The fog presses against the window. The camera tells the story.";
               return (
                 <div key={idx} className="bg-[#1f1f1f] p-4 rounded shadow space-y-4">
                   <p className="text-white">"{phrase}"</p>
                   <div className="flex gap-2 pt-2">
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
-                      ❤️ Like
-                    </button>
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">
-                      ➕ Add to Phrase Collection
-                    </button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">❤️ Like</button>
+                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">➕ Add to Collection</button>
                     <button
                       onClick={() => {
                         setSelectedPhrase(phrase);
@@ -134,14 +122,12 @@ function MainApp() {
         );
 
       case "story":
-        if (!activeProject) {
-          return <p className="text-gray-400">No active project selected.</p>;
-        }
+        if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">📖 {activeProject.title}</h2>
             {activeProject.phrases.length === 0 ? (
-              <p className="text-gray-500">No phrases added to this story yet.</p>
+              <p className="text-gray-500">No phrases added yet.</p>
             ) : (
               <ul className="space-y-4">
                 {activeProject.phrases.map((phrase, idx) => (
@@ -164,9 +150,7 @@ function MainApp() {
         );
 
       case "journal":
-        if (!activeProject) {
-          return <p className="text-gray-400">No active project selected.</p>;
-        }
+        if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
         return (
           <div className="space-y-6">
             <h2 className="text-2xl font-bold text-white">📓 {activeProject.title} — Journal</h2>
@@ -190,26 +174,22 @@ function MainApp() {
                 Add
               </button>
             </div>
-            {activeProject.journalNotes.length === 0 ? (
-              <p className="text-gray-500">No notes yet.</p>
-            ) : (
-              <ul className="space-y-3">
-                {activeProject.journalNotes.map((note, idx) => (
-                  <li
-                    key={idx}
-                    className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
+            <ul className="space-y-3">
+              {activeProject.journalNotes.map((note, idx) => (
+                <li
+                  key={idx}
+                  className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
+                >
+                  <span>{note}</span>
+                  <button
+                    onClick={() => deleteNoteFromProject(note)}
+                    className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
                   >
-                    <span>{note}</span>
-                    <button
-                      onClick={() => deleteNoteFromProject(note)}
-                      className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
-                    >
-                      ✖
-                    </button>
-                  </li>
-                ))}
-              </ul>
-            )}
+                    ✖
+                  </button>
+                </li>
+              ))}
+            </ul>
           </div>
         );
 
@@ -221,38 +201,30 @@ function MainApp() {
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
       <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
-<h1 className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80">
-  <button
-  onClick={() => (window.location.href = "/landing")}
-  className="text-2xl font-bold mb-6 hover:opacity-80"
->
-  🌀 Find Your Echo
-</button>
-</h1>
+        <h1 className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80">
+          <button onClick={() => router.push("/landing")}>🌀 Find Your Echo</button>
+        </h1>
         <nav className="flex flex-col gap-3 text-sm">
-          <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">🌀 Find Your Style</button>
-          <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">💬 Create Your Prompt Phrases</button>
-          <button onClick={() => setActiveTab("story")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📖 The Way to Your Story</button>
-          <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">📓 Your Journal</button>
-          <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">🎛️ Work With Your Friend Engine</button>
+          <button onClick={() => setActiveTab("style")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+            🌀 Find Your Style
+          </button>
+          <button onClick={() => setActiveTab("phrases")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+            💬 Create Your Prompt Phrases
+          </button>
+          <button onClick={() => setActiveTab("story")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+            📖 The Way to Your Story
+          </button>
+          <button onClick={() => setActiveTab("journal")} className="text-left p-3 bg-[#222] hover:bg-[#333] rounded">
+            📓 Your Journal
+          </button>
+          <button onClick={() => setActiveTab("engines")} className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold">
+            🎛️ Work With Your Friend Engine
+          </button>
         </nav>
         <div className="mt-auto text-xs opacity-50 pt-4 border-t border-gray-600">
           Powered by SpiralPrompt Engine © 2025
         </div>
       </div>
-      <main className="flex-1 p-10 overflow-y-auto">
-        <ProjectSelector />
-        {renderContent()}
-        {showModal && selectedPhrase && (
-          <AddToStoryModal
-            phrase={selectedPhrase}
-            onClose={() => {
-              setShowModal(false);
-              setSelectedPhrase(null);
-            }}
-          />
-        )}
-      </main>
-    </div>
-  );
-}
+
+      <main className="fle
+
