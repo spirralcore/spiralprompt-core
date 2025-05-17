@@ -8,6 +8,7 @@ export type Project = {
   createdAt: number;
   phrases: string[];
   journalNotes: string[];
+  scenes: string[];
   engineLogs: string[];
 };
 
@@ -21,6 +22,8 @@ type ProjectsContextType = {
   deletePhraseFromProject: (phrase: string) => void;
   addNoteToProject: (note: string) => void;
   deleteNoteFromProject: (note: string) => void;
+  addSceneToProject: (scene: string, id?: string) => void;
+  deleteSceneFromProject: (scene: string) => void;
 };
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
@@ -69,6 +72,7 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
       createdAt: Date.now(),
       phrases: [],
       journalNotes: [],
+      scenes: [],
       engineLogs: [],
     };
     setProjects((prev) => [...prev, newProject]);
@@ -126,6 +130,31 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
+  const addSceneToProject = (scene: string, id?: string) => {
+    const targetId = id || activeProjectId;
+    if (!targetId) return;
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === targetId
+          ? p.scenes.includes(scene)
+            ? p
+            : { ...p, scenes: [...p.scenes, scene] }
+          : p
+      )
+    );
+  };
+
+  const deleteSceneFromProject = (scene: string) => {
+    if (!activeProjectId) return;
+    setProjects((prev) =>
+      prev.map((p) =>
+        p.id === activeProjectId
+          ? { ...p, scenes: p.scenes.filter((s) => s !== scene) }
+          : p
+      )
+    );
+  };
+
   return (
     <ProjectsContext.Provider
       value={{
@@ -138,6 +167,8 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
         deletePhraseFromProject,
         addNoteToProject,
         deleteNoteFromProject,
+        addSceneToProject,
+        deleteSceneFromProject,
       }}
     >
       {children}
