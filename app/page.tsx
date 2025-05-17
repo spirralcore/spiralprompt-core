@@ -229,7 +229,7 @@ function MainApp() {
         <ProjectSelector />
         {renderContent()}
         {showModal && selectedPhrase && (
-          <AddToStoryModal
+          <AddToSceneModal
             phrase={selectedPhrase}
             onClose={() => {
               setShowModal(false);
