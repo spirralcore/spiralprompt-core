@@ -1,7 +1,7 @@
 "use client";
 
-import { useProjects } from "@/hooks/useProjects";
-import { useState, useEffect } from "react";
+import { useProjects } from "@/contexts/ProjectsContext";
+import { useState } from "react";
 
 export default function AddToStoryModal({
   phrase,
@@ -10,29 +10,12 @@ export default function AddToStoryModal({
   phrase: string;
   onClose: () => void;
 }) {
-  const { projects, addPhraseToSpecificProject } = useProjects();
+  const { projects, addPhraseToProject } = useProjects();
   const [selectedId, setSelectedId] = useState("");
 
-  // Modal açıldığında projeler boş mu? kontrolü
-  useEffect(() => {
-    console.log("📦 Modal açıldı, mevcut projeler:", projects);
-  }, [projects]);
-
   const handleAdd = () => {
-    if (!selectedId) {
-      console.warn("⛔ No project selected");
-      return;
-    }
-
-    console.log("✅ Phrase ekleniyor:", { phrase, selectedId });
-    addPhraseToSpecificProject(phrase, selectedId);
-    console.log("✅ addPhraseToSpecificProject çağrıldı");
-
-    setTimeout(() => {
-      const updated = localStorage.getItem("spiral_projects");
-      console.log("🧠 Güncel localStorage (projects):", updated);
-    }, 500);
-
+    if (!selectedId) return;
+    addPhraseToProject(phrase, selectedId);
     onClose();
   };
 
@@ -46,10 +29,7 @@ export default function AddToStoryModal({
         ) : (
           <select
             value={selectedId}
-            onChange={(e) => {
-              console.log("📌 Project seçildi:", e.target.value);
-              setSelectedId(e.target.value);
-            }}
+            onChange={(e) => setSelectedId(e.target.value)}
             className="w-full p-2 rounded bg-[#2a2a2a] text-sm"
           >
             <option value="">-- Select Project --</option>
