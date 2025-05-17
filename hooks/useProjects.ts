@@ -15,19 +15,31 @@ export function useProjects() {
   const [projects, setProjects] = useState<Project[]>([]);
   const [activeProjectId, setActiveProjectId] = useState<string | null>(null);
 
-  // Load from localStorage
+  // Load from localStorage once on mount
   useEffect(() => {
-    const stored = localStorage.getItem('spiral_projects');
-    const active = localStorage.getItem('spiral_activeProjectId');
-    if (stored) setProjects(JSON.parse(stored));
-    if (active) setActiveProjectId(active);
+    try {
+      const stored = localStorage.getItem('spiral_projects');
+      const active = localStorage.getItem('spiral_activeProjectId');
+      if (stored) setProjects(JSON.parse(stored));
+      if (active) setActiveProjectId(active);
+    } catch (err) {
+      console.error("Failed to load projects from localStorage:", err);
+    }
   }, []);
 
-  // Save to localStorage when projects change
+  // Save whenever projects state changes
   useEffect(() => {
     localStorage.setItem('spiral_projects', JSON.stringify(projects));
   }, [projects]);
 
+  // Save active project ID
+  useEffect(() => {
+    if (activeProjectId) {
+      localStorage.setItem('spiral_activeProjectId', activeProjectId);
+    }
+  }, [activeProjectId]);
+
+  // Add new project
   const addProject = (title: string) => {
     const newProject: Project = {
       id: `project-${Date.now()}`,
@@ -39,32 +51,37 @@ export function useProjects() {
     };
     setProjects((prev) => [...prev, newProject]);
     setActiveProjectId(newProject.id);
-    localStorage.setItem('spiral_activeProjectId', newProject.id);
   };
 
+  // Set active project
   const selectProject = (id: string) => {
     setActiveProjectId(id);
-    localStorage.setItem('spiral_activeProjectId', id);
   };
 
-  const getActiveProject = () => {
+  // Get full object of active project
+  const getActiveProject = (): Project | null => {
     return projects.find((p) => p.id === activeProjectId) || null;
   };
 
+  // Add phrase to active project
   const addPhraseToProject = (phrase: string) => {
     if (!activeProjectId) return;
     setProjects((prev) =>
       prev.map((p) =>
-        p.id === activeProjectId ? { ...p, phrases: [...p.phrases, phrase] } : p
+        p.id === activeProjectId
+          ? { ...p, phrases: [...p.phrases, phrase] }
+          : p
       )
     );
   };
 
-  // ✅ YENİ: Belirli bir projeye phrase ekle
+  // Add phrase to specific project
   const addPhraseToSpecificProject = (phrase: string, projectId: string) => {
     setProjects((prev) =>
       prev.map((p) =>
-        p.id === projectId ? { ...p, phrases: [...p.phrases, phrase] } : p
+        p.id === projectId
+          ? { ...p, phrases: [...p.phrases, phrase] }
+          : p
       )
     );
   };
@@ -76,6 +93,6 @@ export function useProjects() {
     addProject,
     selectProject,
     addPhraseToProject,
-    addPhraseToSpecificProject, // ✅ bunu unutma
+    addPhraseToSpecificProject,
   };
 }
