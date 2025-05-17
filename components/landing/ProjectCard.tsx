@@ -4,7 +4,7 @@ import { useState } from "react";
 import type { Project } from "@/contexts/ProjectsContext";
 
 export default function ProjectCard({ project }: { project: Project }) {
-  const [activeSection, setActiveSection] = useState<"likes" | "phrases" | "story" | "storys">("phrases");
+  const [activeSection, setActiveSection] = useState<"likes" | "phrases" | "scene" | "storys">("phrases");
 
   return (
     <div className="bg-[#1f1f1f] rounded shadow border border-gray-700 text-white p-6">
@@ -16,7 +16,7 @@ export default function ProjectCard({ project }: { project: Project }) {
           </p>
         </div>
         <div className="flex gap-2">
-          {(["likes", "phrases", "story", "storys"] as const).map((section) => (
+          {(["likes", "phrases", "scene", "storys"] as const).map((section) => (
             <button
               key={section}
               onClick={() => setActiveSection(section)}
@@ -28,7 +28,7 @@ export default function ProjectCard({ project }: { project: Project }) {
             >
               {section === "likes" && "❤️ Likes"}
               {section === "phrases" && "💬 Phrases"}
-              {section === "story" && "📖 Story"}
+              {section === "scene" && "🎬 Scene"}
               {section === "storys" && "🌀 Storys"}
             </button>
           ))}
@@ -50,8 +50,8 @@ export default function ProjectCard({ project }: { project: Project }) {
           </ul>
         )}
 
-        {activeSection === "story" && (
-          <div className="text-gray-400 text-sm italic">📖 Story view coming soon...</div>
+        {activeSection === "scene" && (
+          <div className="text-gray-400 text-sm italic">🎬 Scene builder coming soon...</div>
         )}
 
         {activeSection === "storys" && (
