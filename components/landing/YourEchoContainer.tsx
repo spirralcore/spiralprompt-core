@@ -19,4 +19,11 @@ export default function YourEchoContainer() {
               className="bg-[#1f1f1f] p-4 rounded shadow border border-gray-700 text-white"
             >
               <div className="text-lg font-semibold">{project.title}</div>
-              <div className="text-xs opacity-60">Created at: {new Date(project.cr
+              <div className="text-xs opacity-60">Created at: {new Date(project.createdAt).toLocaleString()}</div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  );
+}
