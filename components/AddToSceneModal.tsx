@@ -10,19 +10,20 @@ export default function AddToSceneModal({
   phrase: string;
   onClose: () => void;
 }) {
-  const { projects, addPhraseToProject } = useProjects();
+  const { projects, addSceneToProject } = useProjects(); // ✅ Buraya dikkat
   const [selectedId, setSelectedId] = useState("");
 
   const handleAdd = () => {
     if (!selectedId) return;
-    addPhraseToProject(phrase, selectedId);
+    console.log("🧠 AddToSceneModal çalıştı:", selectedId, phrase); // debug için
+    addSceneToProject(phrase, selectedId); // ✅ Scene olarak ekliyoruz
     onClose();
   };
 
   return (
     <div className="fixed inset-0 bg-black bg-opacity-60 flex items-center justify-center z-50">
       <div className="bg-[#1f1f1f] p-6 rounded shadow-lg w-full max-w-md space-y-4 text-white">
-        <h2 className="text-xl font-bold">Select Project to Add Phrase</h2>
+        <h2 className="text-xl font-bold">Select Project to Add Scene</h2>
 
         {projects.length === 0 ? (
           <p className="text-sm text-gray-400">No projects found. Please create one first.</p>
