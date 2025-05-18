@@ -20,10 +20,10 @@ export default function Sidebar({ activeTab, setActiveTab, onLogoClick }: Sideba
 
   return (
     <aside
-      className={`flex flex-col h-screen border-r border-[#232323] shadow-2xl transition-all duration-200 z-40
+      className={`flex flex-col h-screen border-r shadow-2xl transition-all duration-200 z-40
         ${collapsed ? "w-16" : "w-56"}
-        bg-gradient-to-br from-[#202232cc] via-[#16181aee] to-[#111114f8]
-        backdrop-blur-xl
+        bg-gradient-to-br from-[#2e3935ee] via-[#223127dd] to-[#23282af8]
+        backdrop-blur-xl border-[#34403f44]
       `}
     >
       <div
