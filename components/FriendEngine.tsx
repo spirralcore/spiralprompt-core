@@ -1,32 +1,21 @@
 "use client";
 
-type FriendEngineProps = {
-  data?: any; // İleride GTP/agent çıktısı
-  loading?: boolean;
-};
-
-export default function FriendEngine({ data, loading }: FriendEngineProps) {
-  // Sadece temel placeholder. Sonradan agent/GTP fonksiyonları eklenir.
-  if (loading) {
-    return (
-      <div className="p-8 flex items-center justify-center">
-        <span className="text-lg text-green-700">Loading Friend Engine...</span>
-      </div>
-    );
-  }
-
+export default function FriendEngine() {
   return (
-    <div className="p-8 bg-[#e2ebe9cc] rounded-xl shadow-inner text-green-900">
-      <h2 className="text-2xl font-bold mb-3">🎛️ Friend Engine</h2>
-      <div className="mb-2 opacity-80 text-sm">
-        Here you will interact with advanced GTP agents. (Coming soon!)
+    <div className="max-w-xl mx-auto mt-20 text-center space-y-6">
+      <h2 className="text-4xl font-bold text-transparent bg-gradient-to-r from-purple-500 via-pink-400 to-orange-400 bg-clip-text drop-shadow-lg">
+        🎛️ Work With Your Friend Engine
+      </h2>
+      <p className="text-lg text-gray-600">
+        This section will allow you to connect with premium GTP agents.
+      </p>
+      <p className="text-md text-gray-500">
+        Here you'll discover intelligent assistants, paid prompt consultants, and powerful tools to help you generate the perfect echo.
+      </p>
+      <div className="text-xl font-semibold text-purple-600 mt-10 animate-pulse">
+        🚧 Coming Soon 🚧
       </div>
-      {/* Sonradan agent/GTP response UI buraya gelecek */}
-      {data && (
-        <pre className="mt-4 bg-[#f4f8fa] p-4 rounded text-xs text-gray-800 overflow-x-auto">
-          {JSON.stringify(data, null, 2)}
-        </pre>
-      )}
     </div>
   );
 }
+
