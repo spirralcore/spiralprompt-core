@@ -25,18 +25,12 @@ export default function SceneBuilder({
   onAddToStoryboard,
   onAddToCollection,
 }: SceneBuilderProps) {
-  // Arama filtresi
-  const filteredScenes = searchTerm
-    ? scenes.filter(scene =>
-        scene.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : scenes;
-
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-emerald-600 via-blue-400 to-cyan-400 bg-clip-text text-transparent">
         The Way to Your Scene
       </h2>
+
       {/* Search bar */}
       <div className="flex justify-center mb-4">
         <input
@@ -47,7 +41,8 @@ export default function SceneBuilder({
           className="w-full max-w-xs px-4 py-2 rounded-xl border border-emerald-200 bg-white/80 text-gray-800 shadow focus:ring-2 focus:ring-emerald-400 outline-none"
         />
       </div>
-      {/* Combo ve combo’yu stories’a gönder */}
+
+      {/* Combo ve gönder */}
       <div className="flex flex-wrap gap-2 justify-center mb-2">
         {combo.map((scene) => (
           <span
@@ -72,14 +67,16 @@ export default function SceneBuilder({
           </button>
         )}
       </div>
+
       {/* Scene list */}
       <ul className="space-y-4">
-        {filteredScenes.map((scene, idx) => (
+        {scenes.map((scene, idx) => (
           <li
             key={idx}
             className="bg-white/80 rounded-xl p-4 text-gray-800 font-medium shadow border border-emerald-100 flex flex-wrap gap-2 items-center"
           >
             <span className="block flex-1">{scene}</span>
+
             <button
               title="Like"
               onClick={() => onLike(scene)}
@@ -91,6 +88,7 @@ export default function SceneBuilder({
             >
               ❤️
             </button>
+
             <button
               title="Add to Scenes Collection"
               onClick={() => onAddToCollection(scene)}
@@ -98,6 +96,7 @@ export default function SceneBuilder({
             >
               📥
             </button>
+
             <button
               title="Add to Storyboard"
               onClick={() => onAddToStoryboard(scene)}
@@ -105,6 +104,7 @@ export default function SceneBuilder({
             >
               🎬
             </button>
+
             <button
               title="Combo"
               onClick={() => onCombo(scene)}
@@ -113,18 +113,14 @@ export default function SceneBuilder({
                   ? "text-emerald-800 scale-110"
                   : "text-gray-400 hover:text-emerald-600"
               } transition-all`}
-              disabled={
-                !combo.includes(scene) && combo.length >= 3
-              }
+              disabled={!combo.includes(scene) && combo.length >= 3}
             >
               ➕
             </button>
           </li>
         ))}
-        {filteredScenes.length === 0 && (
-          <li className="text-gray-400 text-center w-full">No scenes found.</li>
-        )}
       </ul>
+
       <div className="mt-8 text-center text-sm text-gray-500">
         <span>
           <span className="font-semibold text-emerald-800">{combo.length}</span>
