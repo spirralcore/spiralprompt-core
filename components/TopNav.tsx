@@ -13,42 +13,44 @@ export default function TopNav({
   echoTab,
   setEchoTab,
 }: TopNavProps) {
+  const echoTabs = ["likes", "phrases", "scenes", "stories"];
+
   return (
-    <div className="mb-8 space-y-6">
-      {/* Üst Menü */}
-      <div className="flex justify-center gap-4">
+    <div className="space-y-6">
+      {/* Üst sekme: Your / Global */}
+      <div className="flex gap-4 justify-center">
         <button
           onClick={() => setTab("your")}
-          className={`px-5 py-2 rounded-lg font-semibold ${
+          className={`px-5 py-2 rounded-full font-semibold shadow ${
             currentTab === "your"
-              ? "bg-green-600 text-white shadow"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              ? "bg-green-500 text-white"
+              : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
           }`}
         >
           Your Echo
         </button>
         <button
           onClick={() => setTab("global")}
-          className={`px-5 py-2 rounded-lg font-semibold ${
+          className={`px-5 py-2 rounded-full font-semibold shadow ${
             currentTab === "global"
-              ? "bg-blue-600 text-white shadow"
-              : "bg-gray-200 text-gray-700 hover:bg-gray-300"
+              ? "bg-blue-500 text-white"
+              : "bg-white border border-gray-300 text-gray-700 hover:bg-gray-100"
           }`}
         >
           Global Echo
         </button>
       </div>
 
-      {/* Alt Sekmeler */}
-      <div className="flex justify-center gap-3">
-        {["likes", "phrases", "scenes", "stories"].map((tab) => (
+      {/* Alt sekmeler: Likes, Phrases, Scenes, Stories */}
+      <div className="flex gap-3 justify-center">
+        {echoTabs.map((tab) => (
           <button
             key={tab}
             onClick={() => setEchoTab(tab as any)}
-            className={`px-4 py-1 rounded-full text-sm font-medium transition-all ${
+            className={`px-4 py-1 rounded-full text-sm font-medium ${
               echoTab === tab
-                ? "bg-black text-white"
-                : "bg-gray-100 text-gray-600 hover:bg-gray-200"
+                ? "bg-gradient-to-r from-green-400 to-blue-400 text-white"
+                : "bg-white border border-gray-300 text-gray-600 hover:bg-gray-100"
             }`}
           >
             {tab.charAt(0).toUpperCase() + tab.slice(1)}
