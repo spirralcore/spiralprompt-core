@@ -9,7 +9,7 @@ export type Project = {
   phrases: string[];
   journalNotes: string[];
   engineLogs: string[];
-  scenes: string[];  // Bu satırı ekledik
+  scenes: string[];
 };
 
 type ProjectsContextType = {
@@ -22,8 +22,8 @@ type ProjectsContextType = {
   deletePhraseFromProject: (phrase: string) => void;
   addNoteToProject: (note: string) => void;
   deleteNoteFromProject: (note: string) => void;
-  addSceneToProject: (scene: string, id?: string) => void; // Yeni ekleme
-  deleteSceneFromProject: (scene: string) => void;        // Yeni ekleme
+  addSceneToProject: (scene: string, id?: string) => void;
+  deleteSceneFromProject: (scene: string) => void;
 };
 
 const ProjectsContext = createContext<ProjectsContextType | undefined>(undefined);
@@ -45,13 +45,13 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
       if (stored) {
         const parsed = JSON.parse(stored).map((p: any) => ({
           ...p,
-          scenes: p.scenes || [], // Eğer yoksa boş dizi ata
+          scenes: p.scenes || [],
         }));
         setProjects(parsed);
       }
       if (active) setActiveProjectId(active);
     } catch (err) {
-      console.error("❌ localStorage read error:", err);
+      console.error("localStorage read error:", err);
     }
   }, []);
 
@@ -79,7 +79,7 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
       phrases: [],
       journalNotes: [],
       engineLogs: [],
-      scenes: [], // Burayı da ekledik
+      scenes: [],
     };
     setProjects((prev) => [...prev, newProject]);
     setActiveProjectId(newProject.id);
@@ -136,7 +136,6 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  // Yeni eklenen sahne ekleme fonksiyonu
   const addSceneToProject = (scene: string, id?: string) => {
     const targetId = id || activeProjectId;
     if (!targetId) return;
@@ -151,7 +150,6 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
     );
   };
 
-  // Yeni eklenen sahne silme fonksiyonu
   const deleteSceneFromProject = (scene: string) => {
     if (!activeProjectId) return;
     setProjects((prev) =>
@@ -175,8 +173,8 @@ export function ProjectsProvider({ children }: { children: React.ReactNode }) {
         deletePhraseFromProject,
         addNoteToProject,
         deleteNoteFromProject,
-        addSceneToProject,      // provider’da ekle
-        deleteSceneFromProject, // provider’da ekle
+        addSceneToProject,
+        deleteSceneFromProject,
       }}
     >
       {children}
