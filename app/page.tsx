@@ -1,6 +1,8 @@
 "use client";
 
 import { useState } from "react";
+import { useRouter } from "next/navigation";
+import { ProjectsProvider } from "@/contexts/ProjectsContext";
 import Sidebar from "@/components/Sidebar";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
@@ -11,7 +13,6 @@ import SceneBuilder from "@/components/SceneBuilder";
 import Journal from "@/components/Journal";
 import Storyboard from "@/components/Storyboard";
 import FriendEngine from "@/components/FriendEngine";
-import { useProjects } from "@/contexts/ProjectsContext";
 
 export default function Home() {
   return (
@@ -21,42 +22,95 @@ export default function Home() {
   );
 }
 
-import { ProjectsProvider } from "@/contexts/ProjectsContext";
-
 function MainApp() {
+  const router = useRouter();
   const [activeTab, setActiveTab] = useState("style");
   const [topMenu, setTopMenu] = useState<"your" | "global">("your");
   const [echoTab, setEchoTab] = useState<"likes" | "phrases" | "scenes" | "stories">("likes");
-  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
+  const [showModal, setShowModal] = useState(false);
+  const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
 
-  const {
-    getActiveProject,
-    addNoteToProject,
-    deleteNoteFromProject,
-    addPhraseToProject,
-    deletePhraseFromProject,
-    addSceneToProject,
-    deleteSceneFromProject,
-  } = useProjects();
-
-  const project = getActiveProject();
+  // Geçici GTP simülasyon verileri (boş başlatılıyor)
+  const [gtpTags, setGtpTags] = useState<Record<string, string[]>>({});
+  const [gtpPhrases, setGtpPhrases] = useState<string[]>([]);
+  const [gtpScenes, setGtpScenes] = useState<string[]>([]);
+  const [gtpJournal, setGtpJournal] = useState<string[]>([]);
+  const [gtpStoryboard, setGtpStoryboard] = useState<any[]>([]);
+  const [gtpEngine, setGtpEngine] = useState<any | null>(null);
 
   const renderContent = () => {
-    if (!project) return <p className="text-gray-400">No active project selected.</p>;
-
     switch (activeTab) {
       case "style":
-        return <FindYourStyle />;
+        return (
+          <FindYourStyle
+            tags={gtpTags}
+            likedTags={[]}
+            combo={[]}
+            searchTerm={""}
+            onSearch={() => {}}
+            onLike={() => {}}
+            onCombo={() => {}}
+            onSendCombo={() => {}}
+            onAddToStoryboard={() => {}}
+          />
+        );
       case "phrases":
-        return <PromptPhrases phrases={project.phrases} />;
+        return (
+          <PromptPhrases
+            phrases={gtpPhrases}
+            likedPhrases={[]}
+            combo={[]}
+            searchTerm={""}
+            onSearch={() => {}}
+            onLike={() => {}}
+            onCombo={() => {}}
+            onSendCombo={() => {}}
+            onAddToStoryboard={() => {}}
+            onAddToCollection={() => {}}
+          />
+        );
       case "scene":
-        return <SceneBuilder scenes={project.scenes} />;
+        return (
+          <SceneBuilder
+            scenes={gtpScenes}
+            likedScenes={[]}
+            combo={[]}
+            searchTerm={""}
+            onSearch={() => {}}
+            onLike={() => {}}
+            onCombo={() => {}}
+            onSendCombo={() => {}}
+            onAddToStoryboard={() => {}}
+            onAddToCollection={() => {}}
+          />
+        );
       case "journal":
-        return <Journal notes={project.journalNotes} />;
+        return (
+          <Journal
+            entries={[]}
+            likedEntries={[]}
+            combo={[]}
+            searchTerm={""}
+            onSearch={() => {}}
+            onLike={() => {}}
+            onCombo={() => {}}
+            onSendCombo={() => {}}
+            onAddToStoryboard={() => {}}
+            onAddToCollection={() => {}}
+            onAddEntry={() => {}}
+          />
+        );
       case "storyboard":
-        return <Storyboard />;
+        return (
+          <Storyboard
+            items={[]}
+            onRemove={() => {}}
+            onReorder={() => {}}
+            onAddCustom={() => {}}
+          />
+        );
       case "engines":
-        return <FriendEngine data={null} loading={false} />;
+        return <FriendEngine data={gtpEngine} loading={false} />;
       default:
         return null;
     }
@@ -98,20 +152,24 @@ function MainApp() {
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        collapsed={sidebarCollapsed}
-        setCollapsed={setSidebarCollapsed}
-        onLogoClick={() => {
-          setActiveTab("style");
-          setTopMenu("your");
-          setSidebarCollapsed(true);
-        }}
+        onLogoClick={() => router.push("/landing")}
       />
       <main className="flex-1 p-10 overflow-y-auto bg-[#f4f8fa]">
-        {activeTab === "style" && sidebarCollapsed && renderTopMenu()}
-        {activeTab === "style" && sidebarCollapsed && renderEchoTabs()}
+        {renderTopMenu()}
+        {renderEchoTabs()}
         <ProjectSelector />
         {renderContent()}
+        {showModal && selectedPhrase && (
+          <AddToSceneModal
+            phrase={selectedPhrase}
+            onClose={() => {
+              setShowModal(false);
+              setSelectedPhrase(null);
+            }}
+          />
+        )}
       </main>
     </div>
   );
 }
+
