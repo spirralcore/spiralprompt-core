@@ -1,163 +1,131 @@
 "use client";
 
-import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ProjectsProvider } from "@/contexts/ProjectsContext";
+import { useProjects } from "@/contexts/ProjectsContext";
+import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
-
 import FindYourStyle from "@/components/FindYourStyle";
 import PromptPhrases from "@/components/PromptPhrases";
 import SceneBuilder from "@/components/SceneBuilder";
 import Journal from "@/components/Journal";
 import Storyboard from "@/components/Storyboard";
 import FriendEngine from "@/components/FriendEngine";
+import { useState } from "react";
 
 export default function Home() {
   return (
-    <ProjectsProvider>
+    <div className="flex h-screen bg-[#f5f7f9] text-gray-800">
       <MainApp />
-    </ProjectsProvider>
+    </div>
   );
 }
 
 function MainApp() {
   const router = useRouter();
+  const pathname = usePathname();
+  const {
+    tagSearch, setTagSearch, tags, likedTags, tagCombo, toggleTagLike, toggleTagCombo, handleSendTagCombo, addTagToStoryboard,
+    phraseSearch, setPhraseSearch, phrases, likedPhrases, phraseCombo, togglePhraseLike, togglePhraseCombo, handleSendPhraseCombo, addPhraseToStoryboard, addPhraseToCollection,
+    sceneSearch, setSceneSearch, scenes, likedScenes, sceneCombo, toggleSceneLike, toggleSceneCombo, handleSendSceneCombo, addSceneToStoryboard, addSceneToCollection,
+    journalSearch, setJournalSearch, journalEntries, likedJournalEntries, journalCombo, toggleJournalLike, toggleJournalCombo, handleSendJournalCombo, addJournalToStoryboard, addJournalToCollection, addJournalEntry,
+    storyboardItems, removeFromStoryboard, reorderStoryboard, addCustomToStoryboard,
+  } = useProjects();
+
   const [activeTab, setActiveTab] = useState("style");
-  const [topMenu, setTopMenu] = useState<"your" | "global">("your");
-  const [echoTab, setEchoTab] = useState<"likes" | "phrases" | "scenes" | "stories">("likes");
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
-
-  // Geçici GTP simülasyon verileri (boş başlatılıyor)
-  const [gtpTags, setGtpTags] = useState<Record<string, string[]>>({});
-  const [gtpPhrases, setGtpPhrases] = useState<string[]>([]);
-  const [gtpScenes, setGtpScenes] = useState<string[]>([]);
-  const [gtpJournal, setGtpJournal] = useState<string[]>([]);
-  const [gtpStoryboard, setGtpStoryboard] = useState<any[]>([]);
-  const [gtpEngine, setGtpEngine] = useState<any | null>(null);
 
   const renderContent = () => {
     switch (activeTab) {
       case "style":
         return (
           <FindYourStyle
-            tags={gtpTags}
-            likedTags={[]}
-            combo={[]}
-            searchTerm={""}
-            onSearch={() => {}}
-            onLike={() => {}}
-            onCombo={() => {}}
-            onSendCombo={() => {}}
-            onAddToStoryboard={() => {}}
+            tags={tags}
+            likedTags={likedTags}
+            combo={tagCombo}
+            searchTerm={tagSearch}
+            onSearch={setTagSearch}
+            onLike={toggleTagLike}
+            onCombo={toggleTagCombo}
+            onSendCombo={handleSendTagCombo}
+            onAddToStoryboard={addTagToStoryboard}
           />
         );
       case "phrases":
         return (
           <PromptPhrases
-            phrases={gtpPhrases}
-            likedPhrases={[]}
-            combo={[]}
-            searchTerm={""}
-            onSearch={() => {}}
-            onLike={() => {}}
-            onCombo={() => {}}
-            onSendCombo={() => {}}
-            onAddToStoryboard={() => {}}
-            onAddToCollection={() => {}}
+            phrases={phrases}
+            likedPhrases={likedPhrases}
+            combo={phraseCombo}
+            searchTerm={phraseSearch}
+            onSearch={setPhraseSearch}
+            onLike={togglePhraseLike}
+            onCombo={togglePhraseCombo}
+            onSendCombo={handleSendPhraseCombo}
+            onAddToStoryboard={addPhraseToStoryboard}
+            onAddToCollection={addPhraseToCollection}
           />
         );
       case "scene":
         return (
           <SceneBuilder
-            scenes={gtpScenes}
-            likedScenes={[]}
-            combo={[]}
-            searchTerm={""}
-            onSearch={() => {}}
-            onLike={() => {}}
-            onCombo={() => {}}
-            onSendCombo={() => {}}
-            onAddToStoryboard={() => {}}
-            onAddToCollection={() => {}}
+            scenes={scenes}
+            likedScenes={likedScenes}
+            combo={sceneCombo}
+            searchTerm={sceneSearch}
+            onSearch={setSceneSearch}
+            onLike={toggleSceneLike}
+            onCombo={toggleSceneCombo}
+            onSendCombo={handleSendSceneCombo}
+            onAddToStoryboard={addSceneToStoryboard}
+            onAddToCollection={addSceneToCollection}
           />
         );
       case "journal":
         return (
           <Journal
-            entries={[]}
-            likedEntries={[]}
-            combo={[]}
-            searchTerm={""}
-            onSearch={() => {}}
-            onLike={() => {}}
-            onCombo={() => {}}
-            onSendCombo={() => {}}
-            onAddToStoryboard={() => {}}
-            onAddToCollection={() => {}}
-            onAddEntry={() => {}}
+            entries={journalEntries}
+            likedEntries={likedJournalEntries}
+            combo={journalCombo}
+            searchTerm={journalSearch}
+            onSearch={setJournalSearch}
+            onLike={toggleJournalLike}
+            onCombo={toggleJournalCombo}
+            onSendCombo={handleSendJournalCombo}
+            onAddToStoryboard={addJournalToStoryboard}
+            onAddToCollection={addJournalToCollection}
+            onAddEntry={addJournalEntry}
           />
         );
       case "storyboard":
         return (
           <Storyboard
-            items={[]}
-            onRemove={() => {}}
-            onReorder={() => {}}
-            onAddCustom={() => {}}
+            items={storyboardItems}
+            onRemove={removeFromStoryboard}
+            onReorder={reorderStoryboard}
+            onAddCustom={addCustomToStoryboard}
           />
         );
       case "engines":
-        return <FriendEngine data={gtpEngine} loading={false} />;
+        return <FriendEngine />;
       default:
         return null;
     }
   };
 
-  const renderTopMenu = () => (
-    <div className="flex gap-4 mb-6">
-      <button
-        className={`px-4 py-2 rounded ${topMenu === "your" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
-        onClick={() => setTopMenu("your")}
-      >
-        Your Echo
-      </button>
-      <button
-        className={`px-4 py-2 rounded ${topMenu === "global" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
-        onClick={() => setTopMenu("global")}
-      >
-        Global Echo
-      </button>
-    </div>
-  );
-
-  const renderEchoTabs = () => (
-    <div className="flex gap-4 mb-4">
-      {["likes", "phrases", "scenes", "stories"].map((tab) => (
-        <button
-          key={tab}
-          className={`px-3 py-1 rounded ${echoTab === tab ? "bg-green-700" : "bg-[#1f1f1f] hover:bg-[#222]"}`}
-          onClick={() => setEchoTab(tab as any)}
-        >
-          {tab.charAt(0).toUpperCase() + tab.slice(1)}
-        </button>
-      ))}
-    </div>
-  );
+  const showTopMenu = pathname === "/landing";
 
   return (
-    <div className="flex h-screen text-white bg-[#f4f8fa]">
-      <Sidebar
-        activeTab={activeTab}
-        setActiveTab={setActiveTab}
-        onLogoClick={() => router.push("/landing")}
-      />
-      <main className="flex-1 p-10 overflow-y-auto bg-[#f4f8fa]">
-        {renderTopMenu()}
-        {renderEchoTabs()}
-        <ProjectSelector />
+    <>
+      <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogoClick={() => router.push("/landing")} />
+      <main className="flex-1 p-8 overflow-y-auto">
+        {showTopMenu && (
+          <>
+            <ProjectSelector />
+            <div className="h-4" />
+          </>
+        )}
         {renderContent()}
         {showModal && selectedPhrase && (
           <AddToSceneModal
@@ -169,7 +137,6 @@ function MainApp() {
           />
         )}
       </main>
-    </div>
+    </>
   );
 }
-
