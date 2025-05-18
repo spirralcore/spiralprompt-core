@@ -1,4 +1,14 @@
-import React from "react";
+import React, { useState } from "react";
+import { cn } from "@/lib/utils"; // Varsa, yoksa tailwind class merge için kendin ekle!
+
+const menuItems = [
+  { key: "style", icon: "🌀", label: "Find Your Style" },
+  { key: "phrases", icon: "💬", label: "Prompt Phrases" },
+  { key: "scene", icon: "🎬", label: "To Your Scene" },
+  { key: "journal", icon: "📓", label: "Your Journal" },
+  { key: "storyboard", icon: "📽️", label: "Storyboard" },
+  { key: "engines", icon: "🎛️", label: "Friend Engine" },
+];
 
 type SidebarProps = {
   activeTab: string;
@@ -6,40 +16,55 @@ type SidebarProps = {
   onLogoClick?: () => void;
 };
 
-const menuItems = [
-  { key: "style", icon: "🌀", label: "Find Your Style" },
-  { key: "phrases", icon: "💬", label: "Create Your Prompt Phrases" },
-  { key: "scene", icon: "🎬", label: "The Way to Your Scene" },
-  { key: "journal", icon: "📓", label: "Your Journal" },
-  { key: "storyboard", icon: "📽️", label: "Storyboard" },
-  { key: "engines", icon: "🎛️", label: "Work With Your Friend Engine" },
-];
-
 export default function Sidebar({ activeTab, setActiveTab, onLogoClick }: SidebarProps) {
+  const [collapsed, setCollapsed] = useState(false);
+
   return (
-    <aside className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg h-screen">
-      <h1
-        className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80"
+    <aside
+      className={cn(
+        "flex flex-col bg-[#18181b] h-screen border-r border-[#232323] shadow-2xl transition-all duration-200 z-40",
+        collapsed ? "w-16" : "w-56"
+      )}
+    >
+      <div
+        className="flex items-center gap-2 mt-4 mb-8 mx-2 cursor-pointer select-none"
         onClick={onLogoClick}
       >
-        🌀 Find Your Echo
-      </h1>
-      <nav className="flex flex-col gap-3 text-sm">
+        <span className="text-3xl">🌀</span>
+        {!collapsed && (
+          <span className="font-bold text-xl tracking-tight transition-all">Find Your Echo</span>
+        )}
+      </div>
+      <nav className="flex flex-1 flex-col gap-1">
         {menuItems.map((item) => (
           <button
             key={item.key}
             onClick={() => setActiveTab(item.key)}
-            className={`text-left p-3 rounded ${
-              activeTab === item.key ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
-            }`}
+            className={cn(
+              "group flex items-center gap-3 px-3 py-2 rounded-lg my-1 font-medium transition-all duration-150 hover:bg-[#262626] hover:text-green-400",
+              activeTab === item.key
+                ? "bg-green-700 text-white shadow-inner"
+                : "text-[#bdbdbd] hover:scale-[1.04]"
+            )}
+            style={{ minWidth: 0 }}
           >
-            {item.icon} {item.label}
+            <span className="text-xl">{item.icon}</span>
+            {!collapsed && <span className="truncate">{item.label}</span>}
           </button>
         ))}
       </nav>
-      <div className="mt-auto text-xs opacity-50 pt-4 border-t border-gray-600">
+      <button
+        onClick={() => setCollapsed((v) => !v)}
+        className="mx-3 mb-6 mt-2 py-1 px-2 rounded bg-[#232323] hover:bg-[#303030] text-xs text-gray-400 transition-all"
+      >
+        {collapsed ? "» Expand" : "« Collapse"}
+      </button>
+      <div className={cn("text-[10px] text-gray-500 text-center pb-3", collapsed ? "opacity-0" : "opacity-100")}>
         Powered by SpiralPrompt Engine © 2025
       </div>
     </aside>
   );
 }
+
+// Not: cn() fonksiyonu Tailwind class'larını kolayca birleştirmek için kullanılır.
+// Eğer kullanmazsan, className'leri doğrudan string ile de yazabilirsin.
