@@ -1,7 +1,7 @@
 "use client";
 
 type FindYourStyleProps = {
-  tags: Record<string, string[]>;
+  tags: string[];
   likedTags: string[];
   combo: string[];
   searchTerm: string;
@@ -36,93 +36,44 @@ export default function FindYourStyle({
           placeholder="Search style tags..."
           value={searchTerm}
           onChange={(e) => onSearch(e.target.value)}
-          className="w-full max-w-xs px-4 py-2 rounded-xl border border-green-200 bg-white/80 text-gray-800 shadow focus:ring-2 focus:ring-green-400 outline-none"
+          className="border border-gray-300 rounded-lg px-4 py-2 w-full max-w-md shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-400"
         />
       </div>
 
-      {/* Combo list + send */}
-      <div className="flex flex-wrap gap-2 justify-center mb-2">
-        {combo.map((tag) => (
-          <span
-            key={tag}
-            className="inline-flex items-center bg-green-200 text-green-900 px-3 py-1 rounded-full font-semibold shadow hover:bg-green-300 transition"
-          >
-            #{tag}
-            <button
-              className="ml-2 text-xs font-bold text-green-800 hover:text-red-500"
-              onClick={() => onCombo(tag)}
-            >
-              ✕
-            </button>
-          </span>
-        ))}
-        {combo.length > 0 && (
-          <button
-            className="ml-2 px-4 py-1 bg-emerald-700 text-white rounded-full font-bold shadow hover:bg-emerald-600 transition"
-            onClick={onSendCombo}
-          >
-            ➡️ Send Combo to Phrases
-          </button>
-        )}
-      </div>
+      {/* Tag list */}
+      <div className="flex flex-wrap gap-2 justify-center">
+        {tags.map((tag) => {
+          const isLiked = likedTags.includes(tag);
+          const isCombo = combo.includes(tag);
 
-      {/* Category lists */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-7">
-        {Object.entries(tags).map(([title, tagList]) =>
-          tagList.length > 0 ? (
+          return (
             <div
-              key={title}
-              className="bg-white/70 rounded-2xl shadow-lg p-5 border border-green-200 hover:shadow-xl transition"
+              key={tag}
+              className={`cursor-pointer px-3 py-1 rounded-full border shadow-sm text-sm select-none
+                ${isLiked ? "bg-pink-200 border-pink-400" : "bg-white border-gray-300"}
+                ${isCombo ? "ring-2 ring-blue-400" : ""}
+              `}
+              onClick={() => onCombo(tag)}
+              onDoubleClick={() => onLike(tag)}
+              onContextMenu={(e) => {
+                e.preventDefault();
+                onAddToStoryboard(tag);
+              }}
             >
-              <h3 className="text-xl font-bold text-green-900 mb-3">{title}</h3>
-              <div className="flex flex-wrap gap-2">
-                {tagList.map((tag: string) => (
-                  <div
-                    key={tag}
-                    className={`flex items-center gap-1 px-2 py-1 rounded-full border transition-all
-                      ${combo.includes(tag)
-                        ? "bg-green-500/80 text-white border-green-600 shadow"
-                        : "bg-green-100 text-green-700 border-green-200"}
-                    `}
-                  >
-                    <button
-                      className="font-medium focus:outline-none"
-                      onClick={() => onCombo(tag)}
-                      disabled={!combo.includes(tag) && combo.length >= 5}
-                    >
-                      #{tag}
-                    </button>
-                    <button
-                      title="Like"
-                      onClick={() => onLike(tag)}
-                      className={`ml-1 text-lg ${
-                        likedTags.includes(tag)
-                          ? "text-pink-500 scale-125"
-                          : "text-gray-400 hover:text-pink-400"
-                      } transition-all`}
-                    >
-                      ❤️
-                    </button>
-                    <button
-                      title="Add to Storyboard"
-                      onClick={() => onAddToStoryboard(tag)}
-                      className="ml-0.5 text-lg text-emerald-700 hover:text-emerald-900 transition-all"
-                    >
-                      🎬
-                    </button>
-                  </div>
-                ))}
-              </div>
+              {tag}
             </div>
-          ) : null
-        )}
+          );
+        })}
       </div>
 
-      <div className="mt-8 text-center text-sm text-gray-500">
-        <span>
-          <span className="font-semibold text-green-800">{combo.length}</span>
-          /5 style combo selected
-        </span>
+      {/* Combo actions */}
+      <div className="text-center">
+        <button
+          onClick={onSendCombo}
+          className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-full shadow-md hover:bg-blue-600"
+        >
+          Send Combo
+        </button>
       </div>
     </div>
   );
