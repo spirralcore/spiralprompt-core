@@ -1,7 +1,7 @@
 "use client";
 
 import { useProjects } from "@/contexts/ProjectsContext";
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 
 export default function ProjectSelector() {
   const {
@@ -13,6 +13,14 @@ export default function ProjectSelector() {
 
   const [newTitle, setNewTitle] = useState("");
   const [showInput, setShowInput] = useState(false);
+  const inputRef = useRef<HTMLInputElement | null>(null);
+
+  // Input açılınca otomatik focus
+  useEffect(() => {
+    if (showInput && inputRef.current) {
+      inputRef.current.focus();
+    }
+  }, [showInput]);
 
   const handleAddProject = () => {
     const trimmed = newTitle.trim();
@@ -50,11 +58,13 @@ export default function ProjectSelector() {
         {showInput ? (
           <>
             <input
+              ref={inputRef}
               type="text"
               value={newTitle}
               onChange={(e) => setNewTitle(e.target.value)}
               placeholder="New project name"
               className="p-2 bg-[#2a2a2a] rounded text-sm"
+              onKeyDown={e => e.key === "Enter" && handleAddProject()}
             />
             <button
               onClick={handleAddProject}
@@ -75,4 +85,3 @@ export default function ProjectSelector() {
     </div>
   );
 }
-
