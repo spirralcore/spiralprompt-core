@@ -5,7 +5,7 @@ import { useProjects } from "@/contexts/ProjectsContext";
 export default function SceneBuilder() {
   const { getActiveProject, addSceneToProject, deleteSceneFromProject } = useProjects();
   const project = getActiveProject();
-console.log("🔍 Aktif proje sahneleri:", project?.scenes);
+
   if (!project) return <p className="text-gray-400">No active project selected.</p>;
 
   const allInputs = [...project.phrases, ...project.journalNotes];
