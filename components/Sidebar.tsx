@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { cn } from "@/lib/utils"; // Varsa, yoksa tailwind class merge için kendin ekle!
 
 const menuItems = [
   { key: "style", icon: "🌀", label: "Find Your Style" },
@@ -21,10 +20,7 @@ export default function Sidebar({ activeTab, setActiveTab, onLogoClick }: Sideba
 
   return (
     <aside
-      className={cn(
-        "flex flex-col bg-[#18181b] h-screen border-r border-[#232323] shadow-2xl transition-all duration-200 z-40",
-        collapsed ? "w-16" : "w-56"
-      )}
+      className={`flex flex-col bg-[#18181b] h-screen border-r border-[#232323] shadow-2xl transition-all duration-200 z-40 ${collapsed ? "w-16" : "w-56"}`}
     >
       <div
         className="flex items-center gap-2 mt-4 mb-8 mx-2 cursor-pointer select-none"
@@ -40,12 +36,11 @@ export default function Sidebar({ activeTab, setActiveTab, onLogoClick }: Sideba
           <button
             key={item.key}
             onClick={() => setActiveTab(item.key)}
-            className={cn(
-              "group flex items-center gap-3 px-3 py-2 rounded-lg my-1 font-medium transition-all duration-150 hover:bg-[#262626] hover:text-green-400",
-              activeTab === item.key
+            className={`group flex items-center gap-3 px-3 py-2 rounded-lg my-1 font-medium transition-all duration-150 hover:bg-[#262626] hover:text-green-400
+              ${activeTab === item.key
                 ? "bg-green-700 text-white shadow-inner"
-                : "text-[#bdbdbd] hover:scale-[1.04]"
-            )}
+                : "text-[#bdbdbd] hover:scale-[1.04]"}
+            `}
             style={{ minWidth: 0 }}
           >
             <span className="text-xl">{item.icon}</span>
@@ -59,12 +54,10 @@ export default function Sidebar({ activeTab, setActiveTab, onLogoClick }: Sideba
       >
         {collapsed ? "» Expand" : "« Collapse"}
       </button>
-      <div className={cn("text-[10px] text-gray-500 text-center pb-3", collapsed ? "opacity-0" : "opacity-100")}>
+      <div className={`text-[10px] text-gray-500 text-center pb-3 ${collapsed ? "opacity-0" : "opacity-100"}`}>
         Powered by SpiralPrompt Engine © 2025
       </div>
     </aside>
   );
 }
 
-// Not: cn() fonksiyonu Tailwind class'larını kolayca birleştirmek için kullanılır.
-// Eğer kullanmazsan, className'leri doğrudan string ile de yazabilirsin.
