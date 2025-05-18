@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { ProjectsProvider } from "@/contexts/ProjectsContext";
+import Sidebar from "@/components/Sidebar";
 import Storyboard from "@/components/Storyboard";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
@@ -94,58 +95,18 @@ function MainApp() {
     </div>
   );
 
-  return (
-    <div className="flex h-screen text-white bg-[#0f0f0f]">
-      {/* Sol Menü */}
-      <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
-        <h1
-          className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80"
-          onClick={() => router.push("/landing")}
-        >
-          🌀 Find Your Echo
-        </h1>
-        <nav className="flex flex-col gap-3 text-sm">
-          <button
-            onClick={() => setActiveTab("style")}
-            className={`text-left p-3 rounded ${activeTab === "style" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
-          >
-            🌀 Find Your Style
-          </button>
-          <button
-            onClick={() => setActiveTab("phrases")}
-            className={`text-left p-3 rounded ${activeTab === "phrases" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
-          >
-            💬 Create Your Prompt Phrases
-          </button>
-          <button
-            onClick={() => setActiveTab("scene")}
-            className={`text-left p-3 rounded ${activeTab === "scene" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
-          >
-            🎬 The Way to Your Scene
-          </button>
-          <button
-            onClick={() => setActiveTab("journal")}
-            className={`text-left p-3 rounded ${activeTab === "journal" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
-          >
-            📓 Your Journal
-          </button>
-          <button
-            onClick={() => setActiveTab("storyboard")}
-            className={`text-left p-3 rounded ${activeTab === "storyboard" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
-          >
-            📽️ Storyboard
-          </button>
-          <button
-            onClick={() => setActiveTab("engines")}
-            className={`text-left p-3 rounded ${activeTab === "engines" ? "bg-green-600" : "bg-[#444] hover:bg-[#555]"}`}
-          >
-            🎛️ Work With Your Friend Engine
-          </button>
-        </nav>
-        <div className="mt-auto text-xs opacity-50 pt-4 border-t border-gray-600">
-          Powered by SpiralPrompt Engine © 2025
-        </div>
-      </div>
+return (
+  <div className="flex h-screen text-white bg-[#0f0f0f]">
+    <Sidebar
+      activeTab={activeTab}
+      setActiveTab={setActiveTab}
+      onLogoClick={() => router.push("/landing")}
+    />
+    <main className="flex-1 p-10 overflow-y-auto">
+      {/* ...diğer içerikler burada kalacak... */}
+    </main>
+  </div>
+);
       {/* Sağ ana içerik */}
       <main className="flex-1 p-10 overflow-y-auto">
         {/* Üst Menü */}
