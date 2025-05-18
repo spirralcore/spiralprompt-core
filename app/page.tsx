@@ -103,10 +103,16 @@ return (
       onLogoClick={() => router.push("/landing")}
     />
     <main className="flex-1 p-10 overflow-y-auto">
-      {/* ...diğer içerikler burada kalacak... */}
+      {/* Sağ ana içerik burada */}
+      {renderTopMenu()}
+      {renderEchoTabs()}
+      <ProjectSelector />
+      {renderContent()}
+      {/* Modals, vs... */}
     </main>
   </div>
 );
+
       {/* Sağ ana içerik */}
       <main className="flex-1 p-10 overflow-y-auto">
         {/* Üst Menü */}
