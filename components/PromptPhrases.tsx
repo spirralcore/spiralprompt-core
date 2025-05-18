@@ -25,6 +25,13 @@ export default function PromptPhrases({
   onAddToStoryboard,
   onAddToCollection,
 }: PromptPhrasesProps) {
+  // Arama filtresi
+  const filteredPhrases = searchTerm
+    ? phrases.filter(phrase =>
+        phrase.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : phrases;
+
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-blue-500 via-green-400 to-teal-400 bg-clip-text text-transparent">
@@ -67,7 +74,7 @@ export default function PromptPhrases({
       </div>
       {/* Phrase list */}
       <ul className="space-y-4">
-        {phrases.map((phrase, idx) => (
+        {filteredPhrases.map((phrase, idx) => (
           <li
             key={idx}
             className="bg-white/80 rounded-xl p-4 text-gray-800 font-medium shadow border border-blue-100 flex flex-wrap gap-2 items-center"
@@ -111,6 +118,9 @@ export default function PromptPhrases({
             </button>
           </li>
         ))}
+        {filteredPhrases.length === 0 && (
+          <li className="text-gray-400 text-center w-full">No phrases found.</li>
+        )}
       </ul>
       <div className="mt-8 text-center text-sm text-gray-500">
         <span>
