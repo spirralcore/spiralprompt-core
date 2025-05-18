@@ -25,18 +25,12 @@ export default function PromptPhrases({
   onAddToStoryboard,
   onAddToCollection,
 }: PromptPhrasesProps) {
-  // Arama filtresi
-  const filteredPhrases = searchTerm
-    ? phrases.filter(phrase =>
-        phrase.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : phrases;
-
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-blue-500 via-green-400 to-teal-400 bg-clip-text text-transparent">
         Create Your Prompt Phrases
       </h2>
+
       {/* Search bar */}
       <div className="flex justify-center mb-4">
         <input
@@ -47,7 +41,8 @@ export default function PromptPhrases({
           className="w-full max-w-xs px-4 py-2 rounded-xl border border-blue-200 bg-white/80 text-gray-800 shadow focus:ring-2 focus:ring-blue-400 outline-none"
         />
       </div>
-      {/* Combo ve combo’yu scenes’a gönder */}
+
+      {/* Combo + send */}
       <div className="flex flex-wrap gap-2 justify-center mb-2">
         {combo.map((phrase) => (
           <span
@@ -72,14 +67,16 @@ export default function PromptPhrases({
           </button>
         )}
       </div>
+
       {/* Phrase list */}
       <ul className="space-y-4">
-        {filteredPhrases.map((phrase, idx) => (
+        {phrases.map((phrase, idx) => (
           <li
             key={idx}
             className="bg-white/80 rounded-xl p-4 text-gray-800 font-medium shadow border border-blue-100 flex flex-wrap gap-2 items-center"
           >
             <span className="block flex-1">"{phrase}"</span>
+
             <button
               title="Like"
               onClick={() => onLike(phrase)}
@@ -91,6 +88,7 @@ export default function PromptPhrases({
             >
               ❤️
             </button>
+
             <button
               title="Add to Scenes Collection"
               onClick={() => onAddToCollection(phrase)}
@@ -98,6 +96,7 @@ export default function PromptPhrases({
             >
               📥
             </button>
+
             <button
               title="Add to Storyboard"
               onClick={() => onAddToStoryboard(phrase)}
@@ -105,6 +104,7 @@ export default function PromptPhrases({
             >
               🎬
             </button>
+
             <button
               title="Combo"
               onClick={() => onCombo(phrase)}
@@ -118,10 +118,8 @@ export default function PromptPhrases({
             </button>
           </li>
         ))}
-        {filteredPhrases.length === 0 && (
-          <li className="text-gray-400 text-center w-full">No phrases found.</li>
-        )}
       </ul>
+
       <div className="mt-8 text-center text-sm text-gray-500">
         <span>
           <span className="font-semibold text-blue-800">{combo.length}</span>
@@ -131,3 +129,4 @@ export default function PromptPhrases({
     </div>
   );
 }
+
