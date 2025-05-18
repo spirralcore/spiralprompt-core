@@ -1,3 +1,4 @@
+
 import React, { useState } from "react";
 
 const menuItems = [
@@ -5,8 +6,8 @@ const menuItems = [
   { key: "phrases", icon: "💬", label: "Prompt Phrases" },
   { key: "scene", icon: "🎬", label: "To Your Scene" },
   { key: "journal", icon: "📓", label: "Your Journal" },
-  { key: "storyboard", icon: "📽️", label: "Storyboard" },
-  { key: "engines", icon: "🎛️", label: "Friend Engine" },
+  { key: "storyboard", icon: "🟝️", label: "Storyboard" },
+  { key: "engines", icon: "🎿️", label: "Friend Engine" },
 ];
 
 type SidebarProps = {
