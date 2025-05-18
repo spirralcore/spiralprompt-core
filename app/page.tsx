@@ -2,10 +2,18 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
+import { ProjectsProvider } from "@/contexts/ProjectsContext";
 import Storyboard from "@/components/Storyboard";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
+// TODO: Aşağıdaki importları ilgili componentler eklendikçe aç
+// import FindYourStyle from "@/components/FindYourStyle";
+// import PromptPhrases from "@/components/PromptPhrases";
+// import SceneBuilder from "@/components/SceneBuilder";
+// import Journal from "@/components/Journal";
+// import FriendEngine from "@/components/FriendEngine";
+// import TopNav from "@/components/TopNav";
+// import EchoTabs from "@/components/EchoTabs";
 
 export default function Home() {
   return (
@@ -17,164 +25,78 @@ export default function Home() {
 
 function MainApp() {
   const router = useRouter();
+  // Sol menüdeki aktif alan
   const [activeTab, setActiveTab] = useState("style");
-  const [selectedTags, setSelectedTags] = useState<string[]>([]);
+  // Üst menüdeki aktif alan (Your Echo, Global Echo)
+  const [topMenu, setTopMenu] = useState<"your" | "global">("your");
+  // Alt sekme: likes, phrases, scenes, stories
+  const [echoTab, setEchoTab] = useState<"likes" | "phrases" | "scenes" | "stories">("likes");
+
+  // Modal ve selection state
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
-  const [noteInput, setNoteInput] = useState("");
 
-  const {
-    getActiveProject,
-    addPhraseToProject,
-    deletePhraseFromProject,
-    addNoteToProject,
-    deleteNoteFromProject,
-  } = useProjects();
-
-  const activeProject = getActiveProject();
-
-  const categories = {
-    "Trigger Type": ["arrival", "collapse", "awakening", "memory", "threshold"],
-    "Tone Tags": ["nostalgic", "haunting", "wistful", "surreal", "melancholic"],
-    "Echo Intent": ["remembering", "seeking", "wandering", "calling", "watching"],
-    "Character / Archetype": ["ghost", "witness", "wanderer", "shadow", "voicebearer"],
-    "Symbolic Object / Motif": ["cracked mirror", "headphones", "door", "library card", "glitch hallway"],
-    "Narrative Pulse": ["memory burn", "rainfall descent", "first contact", "unwritten pages", "library threshold"],
-    "Elemental Mood": ["silence", "wind", "fire", "storm", "ash"],
-    "Visual Style": ["fragmented", "minimal", "baroque", "sublime", "void-based"],
-    "Spiral Signature": ["broken becoming", "names with meaning", "silence before impact", "the seen unseen", "echoed entry"],
-    "Emotional Core": ["shame", "longing", "paranoia", "curiosity", "sacred resentment"],
-  };
-
-  const toggleTag = (tag: string) => {
-    if (selectedTags.includes(tag)) {
-      setSelectedTags(selectedTags.filter((t) => t !== tag));
-    } else if (selectedTags.length < 5) {
-      setSelectedTags([...selectedTags, tag]);
-    }
-  };
-
+  // Placeholderlar; bunlar ayrı component olarak split edilmeli!
   const renderContent = () => {
     switch (activeTab) {
       case "style":
-        return (
-          <div className="space-y-6">
-            <input
-              type="text"
-              placeholder="#tag gir ya da whatever you feel..."
-              className="w-full bg-gray-800 text-white p-3 rounded border border-gray-600"
-            />
-            <div className="grid grid-cols-2 gap-6">
-              {Object.entries(categories).map(([title, tags]) => (
-                <div key={title} className="bg-[#1f1f1f] p-4 rounded shadow">
-                  <h3 className="text-lg font-bold mb-3">{title}</h3>
-                  <div className="flex flex-wrap gap-2">
-                    {tags.map((tag) => (
-                      <button
-                        key={tag}
-                        onClick={() => toggleTag(tag)}
-                        className={`px-3 py-1 rounded ${
-                          selectedTags.includes(tag)
-                            ? "bg-green-600 text-white"
-                            : "bg-gray-700 hover:bg-gray-600"
-                        }`}
-                      >
-                        #{tag}
-                      </button>
-                    ))}
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        );
-
+        // return <FindYourStyle />;
+        return <div className="text-gray-400">Find Your Style component gelecek...</div>;
       case "phrases":
-        return (
-          <div className="space-y-6">
-            <input
-              type="text"
-              placeholder="Whisper your words..."
-              className="w-full bg-gray-800 text-white p-3 rounded border border-gray-600"
-            />
-            {[1, 2, 3].map((_, idx) => {
-              const phrase = "The fog presses against the window. The camera tells the story.";
-              return (
-                <div key={idx} className="bg-[#1f1f1f] p-4 rounded shadow space-y-4">
-                  <p className="text-white">"{phrase}"</p>
-                  <div className="flex gap-2 pt-2">
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">❤️ Like</button>
-                    <button className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm">➕ Add to Collection</button>
-                    <button
-                      onClick={() => {
-                        setSelectedPhrase(phrase);
-                        setShowModal(true);
-                      }}
-                      className="px-3 py-1 rounded bg-gray-700 hover:bg-gray-600 text-sm"
-                    >
-                      ➡️ Use in Scene
-                    </button>
-                  </div>
-                </div>
-              );
-            })}
-          </div>
-        );
-
+        // return <PromptPhrases />;
+        return <div className="text-gray-400">Create Your Prompt Phrases component gelecek...</div>;
       case "scene":
-        return <Storyboard />;
-
+        // return <SceneBuilder />;
+        return <div className="text-gray-400">The Way to Your Scene component gelecek...</div>;
       case "journal":
-        if (!activeProject) return <p className="text-gray-400">No active project selected.</p>;
-        return (
-          <div className="space-y-6">
-            <h2 className="text-2xl font-bold text-white">📓 {activeProject.title} — Journal</h2>
-            <div className="flex gap-2">
-              <input
-                type="text"
-                value={noteInput}
-                onChange={(e) => setNoteInput(e.target.value)}
-                placeholder="Type a journal note..."
-                className="flex-1 p-2 rounded bg-[#2a2a2a] border border-gray-600 text-white"
-              />
-              <button
-                onClick={() => {
-                  if (noteInput.trim()) {
-                    addNoteToProject(noteInput.trim());
-                    setNoteInput("");
-                  }
-                }}
-                className="px-4 py-2 bg-green-600 rounded hover:bg-green-500 text-sm"
-              >
-                Add
-              </button>
-            </div>
-            <ul className="space-y-3">
-              {activeProject.journalNotes.map((note, idx) => (
-                <li
-                  key={idx}
-                  className="relative bg-[#1f1f1f] p-3 rounded shadow text-white text-sm border border-gray-700"
-                >
-                  <span>{note}</span>
-                  <button
-                    onClick={() => deleteNoteFromProject(note)}
-                    className="absolute top-2 right-2 text-red-400 hover:text-red-600 text-xs"
-                  >
-                    ✖
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-        );
-
+        // return <Journal />;
+        return <div className="text-gray-400">Your Journal component gelecek...</div>;
+      case "storyboard":
+        return <Storyboard />;
+      case "engines":
+        // return <FriendEngine />;
+        return <div className="text-gray-400">Work With Your Friend Engine component gelecek...</div>;
       default:
         return null;
     }
   };
 
+  // Üst menü (Your Echo / Global Echo)
+  const renderTopMenu = () => (
+    <div className="flex gap-4 mb-6">
+      <button
+        className={`px-4 py-2 rounded ${topMenu === "your" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
+        onClick={() => setTopMenu("your")}
+      >
+        Your Echo
+      </button>
+      <button
+        className={`px-4 py-2 rounded ${topMenu === "global" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
+        onClick={() => setTopMenu("global")}
+      >
+        Global Echo
+      </button>
+    </div>
+  );
+
+  // Alt sekmeler
+  const renderEchoTabs = () => (
+    <div className="flex gap-4 mb-4">
+      {["likes", "phrases", "scenes", "stories"].map((tab) => (
+        <button
+          key={tab}
+          className={`px-3 py-1 rounded ${echoTab === tab ? "bg-green-700" : "bg-[#1f1f1f] hover:bg-[#222]"}`}
+          onClick={() => setEchoTab(tab as any)}
+        >
+          {tab.charAt(0).toUpperCase() + tab.slice(1)}
+        </button>
+      ))}
+    </div>
+  );
+
   return (
     <div className="flex h-screen text-white bg-[#0f0f0f]">
+      {/* Sol Menü */}
       <div className="w-64 bg-[#1a1a1a] p-6 flex flex-col gap-4 shadow-lg">
         <h1
           className="text-2xl font-bold mb-6 cursor-pointer hover:opacity-80"
@@ -185,47 +107,37 @@ function MainApp() {
         <nav className="flex flex-col gap-3 text-sm">
           <button
             onClick={() => setActiveTab("style")}
-            className={`text-left p-3 rounded ${
-              activeTab === "style" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
-            }`}
+            className={`text-left p-3 rounded ${activeTab === "style" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
           >
             🌀 Find Your Style
           </button>
           <button
             onClick={() => setActiveTab("phrases")}
-            className={`text-left p-3 rounded ${
-              activeTab === "phrases" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
-            }`}
+            className={`text-left p-3 rounded ${activeTab === "phrases" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
           >
             💬 Create Your Prompt Phrases
           </button>
           <button
             onClick={() => setActiveTab("scene")}
-            className={`text-left p-3 rounded ${
-              activeTab === "scene" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
-            }`}
+            className={`text-left p-3 rounded ${activeTab === "scene" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
           >
             🎬 The Way to Your Scene
           </button>
           <button
             onClick={() => setActiveTab("journal")}
-            className={`text-left p-3 rounded ${
-              activeTab === "journal" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
-            }`}
+            className={`text-left p-3 rounded ${activeTab === "journal" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
           >
             📓 Your Journal
           </button>
           <button
             onClick={() => setActiveTab("storyboard")}
-            className={`text-left p-3 rounded ${
-              activeTab === "storyboard" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"
-            }`}
+            className={`text-left p-3 rounded ${activeTab === "storyboard" ? "bg-green-600" : "bg-[#222] hover:bg-[#333]"}`}
           >
             📽️ Storyboard
           </button>
           <button
             onClick={() => setActiveTab("engines")}
-            className="text-left p-3 bg-[#444] hover:bg-[#555] rounded font-semibold"
+            className={`text-left p-3 rounded ${activeTab === "engines" ? "bg-green-600" : "bg-[#444] hover:bg-[#555]"}`}
           >
             🎛️ Work With Your Friend Engine
           </button>
@@ -234,10 +146,17 @@ function MainApp() {
           Powered by SpiralPrompt Engine © 2025
         </div>
       </div>
-
+      {/* Sağ ana içerik */}
       <main className="flex-1 p-10 overflow-y-auto">
+        {/* Üst Menü */}
+        {renderTopMenu()}
+        {/* Alt sekmeler */}
+        {renderEchoTabs()}
+        {/* Proje Seçici */}
         <ProjectSelector />
+        {/* Seçilen alanın içeriği */}
         {renderContent()}
+        {/* Modal örneği */}
         {showModal && selectedPhrase && (
           <AddToSceneModal
             phrase={selectedPhrase}
