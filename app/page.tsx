@@ -1,5 +1,6 @@
 "use client";
 
+import { ProjectsProvider } from "@/contexts/ProjectsContext";
 import { useProjects } from "@/contexts/ProjectsContext";
 import { useRouter, usePathname } from "next/navigation";
 import Sidebar from "@/components/Sidebar";
@@ -13,15 +14,15 @@ import Storyboard from "@/components/Storyboard";
 import FriendEngine from "@/components/FriendEngine";
 import { useState } from "react";
 
-export default function Home() {
+export default function HomeWrapper() {
   return (
-    <div className="flex h-screen bg-[#f5f7f9] text-gray-800">
-      <MainApp />
-    </div>
+    <ProjectsProvider>
+      <Home />
+    </ProjectsProvider>
   );
 }
 
-function MainApp() {
+function Home() {
   const router = useRouter();
   const pathname = usePathname();
   const {
@@ -35,6 +36,7 @@ function MainApp() {
   const [activeTab, setActiveTab] = useState("style");
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
+  const showTopMenu = pathname === "/landing";
 
   const renderContent = () => {
     switch (activeTab) {
@@ -114,10 +116,8 @@ function MainApp() {
     }
   };
 
-  const showTopMenu = pathname === "/landing";
-
   return (
-    <>
+    <div className="flex h-screen bg-[#f5f7f9] text-gray-800">
       <Sidebar activeTab={activeTab} setActiveTab={setActiveTab} onLogoClick={() => router.push("/landing")} />
       <main className="flex-1 p-8 overflow-y-auto">
         {showTopMenu && (
@@ -137,6 +137,6 @@ function MainApp() {
           />
         )}
       </main>
-    </>
+    </div>
   );
 }
