@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { useRouter } from "next/navigation";
-import { ProjectsProvider } from "@/contexts/ProjectsContext";
+import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
 import Sidebar from "@/components/Sidebar";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
@@ -24,60 +24,154 @@ export default function Home() {
 
 function MainApp() {
   const router = useRouter();
+  const {
+    // FindYourStyle
+    tags,
+    likedTags,
+    tagCombo,
+    tagSearch,
+    setTagSearch,
+    toggleTagLike,
+    toggleTagCombo,
+    handleSendTagCombo,
+    addTagToStoryboard,
+
+    // PromptPhrases
+    phrases,
+    likedPhrases,
+    phraseCombo,
+    phraseSearch,
+    setPhraseSearch,
+    togglePhraseLike,
+    togglePhraseCombo,
+    handleSendPhraseCombo,
+    addPhraseToStoryboard,
+    addPhraseToCollection,
+
+    // SceneBuilder
+    scenes,
+    likedScenes,
+    sceneCombo,
+    sceneSearch,
+    setSceneSearch,
+    toggleSceneLike,
+    toggleSceneCombo,
+    handleSendSceneCombo,
+    addSceneToStoryboard,
+    addSceneToCollection,
+
+    // Journal
+    journalEntries,
+    likedJournalEntries,
+    journalCombo,
+    journalSearch,
+    setJournalSearch,
+    toggleJournalLike,
+    toggleJournalCombo,
+    handleSendJournalCombo,
+    addJournalToStoryboard,
+    addJournalToCollection,
+    addJournalEntry,
+
+    // Storyboard
+    storyboardItems,
+    removeFromStoryboard,
+    reorderStoryboard,
+    addCustomToStoryboard,
+
+    // Diğer (modal, project, vs. contextten geliyor olabilir)
+  } = useProjects(); // Burada tüm veri context/agent’ten geliyor!
+
   const [activeTab, setActiveTab] = useState("style");
   const [topMenu, setTopMenu] = useState<"your" | "global">("your");
   const [echoTab, setEchoTab] = useState<"likes" | "phrases" | "scenes" | "stories">("likes");
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
 
-  // Burası GTP veya agent veri kaynaklarının geldiği yer olacak.
-  // Şu an örnek data ile bağlıyorum, gerçek GTP geldiğinde state'leri buraya bağlayacaksın!
-  const [gtpTags, setGtpTags] = useState<Record<string, string[]> | null>(null);
-  const [gtpPhrases, setGtpPhrases] = useState<string[] | null>(null);
-  const [gtpScenes, setGtpScenes] = useState<any[] | null>(null);
-  const [gtpJournal, setGtpJournal] = useState<string[] | null>(null);
-  const [gtpStoryboard, setGtpStoryboard] = useState<any[] | null>(null);
-  const [gtpEngine, setGtpEngine] = useState<any | null>(null);
-
-  // Loading state örnekleri (agent veri bekleniyorsa)
-  const [loadingTags, setLoadingTags] = useState(false);
-  const [loadingPhrases, setLoadingPhrases] = useState(false);
-  const [loadingScenes, setLoadingScenes] = useState(false);
-  const [loadingJournal, setLoadingJournal] = useState(false);
-  const [loadingStoryboard, setLoadingStoryboard] = useState(false);
-  const [loadingEngine, setLoadingEngine] = useState(false);
-
+  // --------- renderContent ---------
   const renderContent = () => {
     switch (activeTab) {
       case "style":
         return (
-          <FindYourStyle tags={gtpTags} loading={loadingTags} />
+          <FindYourStyle
+            tags={tags}
+            likedTags={likedTags}
+            combo={tagCombo}
+            searchTerm={tagSearch}
+            onSearch={setTagSearch}
+            onLike={toggleTagLike}
+            onCombo={toggleTagCombo}
+            onSendCombo={handleSendTagCombo}
+            onAddToStoryboard={addTagToStoryboard}
+          />
         );
       case "phrases":
         return (
-          <PromptPhrases phrases={gtpPhrases} loading={loadingPhrases} />
+          <PromptPhrases
+            phrases={phrases}
+            likedPhrases={likedPhrases}
+            combo={phraseCombo}
+            searchTerm={phraseSearch}
+            onSearch={setPhraseSearch}
+            onLike={togglePhraseLike}
+            onCombo={togglePhraseCombo}
+            onSendCombo={handleSendPhraseCombo}
+            onAddToStoryboard={addPhraseToStoryboard}
+            onAddToCollection={addPhraseToCollection}
+          />
         );
       case "scene":
         return (
-          <SceneBuilder scenes={gtpScenes} loading={loadingScenes} />
+          <SceneBuilder
+            scenes={scenes}
+            likedScenes={likedScenes}
+            combo={sceneCombo}
+            searchTerm={sceneSearch}
+            onSearch={setSceneSearch}
+            onLike={toggleSceneLike}
+            onCombo={toggleSceneCombo}
+            onSendCombo={handleSendSceneCombo}
+            onAddToStoryboard={addSceneToStoryboard}
+            onAddToCollection={addSceneToCollection}
+          />
         );
       case "journal":
         return (
-          <Journal notes={gtpJournal} loading={loadingJournal} />
+          <Journal
+            entries={journalEntries}
+            likedEntries={likedJournalEntries}
+            combo={journalCombo}
+            searchTerm={journalSearch}
+            onSearch={setJournalSearch}
+            onLike={toggleJournalLike}
+            onCombo={toggleJournalCombo}
+            onSendCombo={handleSendJournalCombo}
+            onAddToStoryboard={addJournalToStoryboard}
+            onAddToCollection={addJournalToCollection}
+            onAddEntry={addJournalEntry}
+          />
         );
       case "storyboard":
         return (
-          <Storyboard board={gtpStoryboard} loading={loadingStoryboard} />
+          <Storyboard
+            items={storyboardItems}
+            onRemove={removeFromStoryboard}
+            onReorder={reorderStoryboard}
+            onAddCustom={addCustomToStoryboard}
+          />
         );
       case "engines":
         return (
-          <FriendEngine data={gtpEngine} loading={loadingEngine} />
+          <FriendEngine
+            data={null} // Agent gelince eklenir
+          />
         );
       default:
         return null;
     }
   };
 
+  // ---------- UI ----------
   const renderTopMenu = () => (
     <div className="flex gap-4 mb-6">
       <button
