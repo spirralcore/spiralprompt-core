@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
+
 type StoryboardItem = {
   id: string;
-  type: "tag" | "phrase" | "scene" | "journal" | "custom";
+  type: "tag" | "phrase" | "scene" | "journal" | "story" | "custom";
   value: string;
-  sourceLabel?: string; // Hangi alandan geldiği (isteğe bağlı)
+  sourceLabel?: string;
 };
 
 type StoryboardProps = {
@@ -14,15 +16,12 @@ type StoryboardProps = {
   onAddCustom?: (value: string) => void;
 };
 
-import { useState } from "react";
-
 export default function Storyboard({
   items,
   onRemove,
   onReorder,
   onAddCustom,
 }: StoryboardProps) {
-  // (Bonus) Sürükle-bırak için index state’i:
   const [dragIndex, setDragIndex] = useState<number | null>(null);
   const [customInput, setCustomInput] = useState("");
 
@@ -43,12 +42,12 @@ export default function Storyboard({
     }
   };
 
-  // Tip/ikonlar:
   const icons: Record<string, string> = {
     tag: "🏷️",
     phrase: "💬",
     scene: "🎬",
     journal: "📝",
+    story: "📖",
     custom: "⭐",
   };
 
@@ -57,7 +56,7 @@ export default function Storyboard({
       <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-pink-400 via-yellow-400 to-green-300 bg-clip-text text-transparent">
         Storyboard
       </h2>
-      {/* (Opsiyonel) Custom item ekle */}
+
       {onAddCustom && (
         <div className="flex gap-2 mb-6">
           <input
@@ -75,7 +74,7 @@ export default function Storyboard({
           </button>
         </div>
       )}
-      {/* Storyboard itemları */}
+
       <ul className="space-y-4">
         {items.map((item, idx) => (
           <li
@@ -89,9 +88,7 @@ export default function Storyboard({
             <span className="text-2xl">{icons[item.type] || "🌈"}</span>
             <span className="block flex-1">{item.value}</span>
             {item.sourceLabel && (
-              <span className="text-xs text-gray-400 ml-2">
-                {item.sourceLabel}
-              </span>
+              <span className="text-xs text-gray-400 ml-2">{item.sourceLabel}</span>
             )}
             <button
               title="Remove from Storyboard"
@@ -103,6 +100,7 @@ export default function Storyboard({
           </li>
         ))}
       </ul>
+
       <div className="mt-6 text-center text-xs text-gray-400">
         Drag & drop to reorder your scenes. Add/remove freely!
       </div>
