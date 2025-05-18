@@ -45,4 +45,56 @@ export default function ProjectCard({ project }: { project: Project }) {
               >
                 {section === "likes" && "❤️ Likes"}
                 {section === "phrases" && "💬 Phrases"}
+                {section === "scene" && "🎬 Scene"}
+                {section === "storys" && "🌀 Storys"}
+              </button>
+            )
+          )}
+        </div>
+      </div>
+
+      <div className="mt-4">
+        {activeSection === "phrases" && (
+          <ul className="space-y-2">
+            {project.phrases.length === 0 ? (
+              <li className="text-gray-400 text-sm">No phrases yet.</li>
+            ) : (
+              project.phrases.map((phrase, idx) => (
+                <li key={idx} className="bg-[#2a2a2a] p-3 rounded text-sm">
+                  {phrase}
+                </li>
+              ))
+            )}
+          </ul>
+        )}
+
+        {activeSection === "scene" && (
+          <div className="text-gray-400 text-sm italic">
+            🎬 Scene builder coming soon...
+          </div>
+        )}
+
+        {activeSection === "storys" && (
+          <div className="text-sm text-gray-300">
+            View all your stories in{" "}
+            <a
+              href="/stories"
+              className="text-green-400 underline hover:text-green-300"
+              onClick={(e) => e.stopPropagation()}
+            >
+              The Way to Your Story
+            </a>
+            .
+          </div>
+        )}
+
+        {activeSection === "likes" && (
+          <div className="text-gray-400 text-sm italic">
+            ❤️ Likes will be tracked soon.
+          </div>
+        )}
+      </div>
+    </div>
+  );
+}
 
