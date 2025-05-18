@@ -6,12 +6,13 @@ import { ProjectsProvider } from "@/contexts/ProjectsContext";
 import Sidebar from "@/components/Sidebar";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
-// Gelecek component placeholderları (ileride eklenir):
-// import FindYourStyle from "@/components/FindYourStyle";
-// import PromptPhrases from "@/components/PromptPhrases";
-// import SceneBuilder from "@/components/SceneBuilder";
-// import Journal from "@/components/Journal";
-// import FriendEngine from "@/components/FriendEngine";
+
+import FindYourStyle from "@/components/FindYourStyle";
+import PromptPhrases from "@/components/PromptPhrases";
+import SceneBuilder from "@/components/SceneBuilder";
+import Journal from "@/components/Journal";
+import Storyboard from "@/components/Storyboard";
+import FriendEngine from "@/components/FriendEngine";
 
 export default function Home() {
   return (
@@ -29,21 +30,49 @@ function MainApp() {
   const [showModal, setShowModal] = useState(false);
   const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
 
-  // Placeholder içerik fonksiyonları:
+  // Burası GTP veya agent veri kaynaklarının geldiği yer olacak.
+  // Şu an örnek data ile bağlıyorum, gerçek GTP geldiğinde state'leri buraya bağlayacaksın!
+  const [gtpTags, setGtpTags] = useState<Record<string, string[]> | null>(null);
+  const [gtpPhrases, setGtpPhrases] = useState<string[] | null>(null);
+  const [gtpScenes, setGtpScenes] = useState<any[] | null>(null);
+  const [gtpJournal, setGtpJournal] = useState<string[] | null>(null);
+  const [gtpStoryboard, setGtpStoryboard] = useState<any[] | null>(null);
+  const [gtpEngine, setGtpEngine] = useState<any | null>(null);
+
+  // Loading state örnekleri (agent veri bekleniyorsa)
+  const [loadingTags, setLoadingTags] = useState(false);
+  const [loadingPhrases, setLoadingPhrases] = useState(false);
+  const [loadingScenes, setLoadingScenes] = useState(false);
+  const [loadingJournal, setLoadingJournal] = useState(false);
+  const [loadingStoryboard, setLoadingStoryboard] = useState(false);
+  const [loadingEngine, setLoadingEngine] = useState(false);
+
   const renderContent = () => {
     switch (activeTab) {
       case "style":
-        return <div className="text-gray-400">Find Your Style component gelecek...</div>;
+        return (
+          <FindYourStyle tags={gtpTags} loading={loadingTags} />
+        );
       case "phrases":
-        return <div className="text-gray-400">Create Your Prompt Phrases component gelecek...</div>;
+        return (
+          <PromptPhrases phrases={gtpPhrases} loading={loadingPhrases} />
+        );
       case "scene":
-        return <div className="text-gray-400">The Way to Your Scene component gelecek...</div>;
+        return (
+          <SceneBuilder scenes={gtpScenes} loading={loadingScenes} />
+        );
       case "journal":
-        return <div className="text-gray-400">Your Journal component gelecek...</div>;
+        return (
+          <Journal notes={gtpJournal} loading={loadingJournal} />
+        );
       case "storyboard":
-        return <div className="text-gray-400">Storyboard component gelecek...</div>;
+        return (
+          <Storyboard board={gtpStoryboard} loading={loadingStoryboard} />
+        );
       case "engines":
-        return <div className="text-gray-400">Work With Your Friend Engine component gelecek...</div>;
+        return (
+          <FriendEngine data={gtpEngine} loading={loadingEngine} />
+        );
       default:
         return null;
     }
@@ -81,13 +110,13 @@ function MainApp() {
   );
 
   return (
-    <div className="flex h-screen text-white bg-[#0f0f0f]">
+    <div className="flex h-screen text-white bg-[#f4f8fa]">
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         onLogoClick={() => router.push("/landing")}
       />
-      <main className="flex-1 p-10 overflow-y-auto">
+      <main className="flex-1 p-10 overflow-y-auto bg-[#f4f8fa]">
         {renderTopMenu()}
         {renderEchoTabs()}
         <ProjectSelector />
