@@ -1,8 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
-import { ProjectsProvider, useProjects } from "@/contexts/ProjectsContext";
 import Sidebar from "@/components/Sidebar";
 import ProjectSelector from "@/components/ProjectSelector";
 import AddToSceneModal from "@/components/AddToSceneModal";
@@ -13,6 +11,7 @@ import SceneBuilder from "@/components/SceneBuilder";
 import Journal from "@/components/Journal";
 import Storyboard from "@/components/Storyboard";
 import FriendEngine from "@/components/FriendEngine";
+import { useProjects } from "@/contexts/ProjectsContext";
 
 export default function Home() {
   return (
@@ -22,156 +21,47 @@ export default function Home() {
   );
 }
 
+import { ProjectsProvider } from "@/contexts/ProjectsContext";
+
 function MainApp() {
-  const router = useRouter();
-  const {
-    // FindYourStyle
-    tags,
-    likedTags,
-    tagCombo,
-    tagSearch,
-    setTagSearch,
-    toggleTagLike,
-    toggleTagCombo,
-    handleSendTagCombo,
-    addTagToStoryboard,
-
-    // PromptPhrases
-    phrases,
-    likedPhrases,
-    phraseCombo,
-    phraseSearch,
-    setPhraseSearch,
-    togglePhraseLike,
-    togglePhraseCombo,
-    handleSendPhraseCombo,
-    addPhraseToStoryboard,
-    addPhraseToCollection,
-
-    // SceneBuilder
-    scenes,
-    likedScenes,
-    sceneCombo,
-    sceneSearch,
-    setSceneSearch,
-    toggleSceneLike,
-    toggleSceneCombo,
-    handleSendSceneCombo,
-    addSceneToStoryboard,
-    addSceneToCollection,
-
-    // Journal
-    journalEntries,
-    likedJournalEntries,
-    journalCombo,
-    journalSearch,
-    setJournalSearch,
-    toggleJournalLike,
-    toggleJournalCombo,
-    handleSendJournalCombo,
-    addJournalToStoryboard,
-    addJournalToCollection,
-    addJournalEntry,
-
-    // Storyboard
-    storyboardItems,
-    removeFromStoryboard,
-    reorderStoryboard,
-    addCustomToStoryboard,
-
-    // Diğer (modal, project, vs. contextten geliyor olabilir)
-  } = useProjects(); // Burada tüm veri context/agent’ten geliyor!
-
   const [activeTab, setActiveTab] = useState("style");
   const [topMenu, setTopMenu] = useState<"your" | "global">("your");
   const [echoTab, setEchoTab] = useState<"likes" | "phrases" | "scenes" | "stories">("likes");
-  const [showModal, setShowModal] = useState(false);
-  const [selectedPhrase, setSelectedPhrase] = useState<string | null>(null);
+  const [sidebarCollapsed, setSidebarCollapsed] = useState(false);
 
-  // --------- renderContent ---------
+  const {
+    getActiveProject,
+    addNoteToProject,
+    deleteNoteFromProject,
+    addPhraseToProject,
+    deletePhraseFromProject,
+    addSceneToProject,
+    deleteSceneFromProject,
+  } = useProjects();
+
+  const project = getActiveProject();
+
   const renderContent = () => {
+    if (!project) return <p className="text-gray-400">No active project selected.</p>;
+
     switch (activeTab) {
       case "style":
-        return (
-          <FindYourStyle
-            tags={tags}
-            likedTags={likedTags}
-            combo={tagCombo}
-            searchTerm={tagSearch}
-            onSearch={setTagSearch}
-            onLike={toggleTagLike}
-            onCombo={toggleTagCombo}
-            onSendCombo={handleSendTagCombo}
-            onAddToStoryboard={addTagToStoryboard}
-          />
-        );
+        return <FindYourStyle />;
       case "phrases":
-        return (
-          <PromptPhrases
-            phrases={phrases}
-            likedPhrases={likedPhrases}
-            combo={phraseCombo}
-            searchTerm={phraseSearch}
-            onSearch={setPhraseSearch}
-            onLike={togglePhraseLike}
-            onCombo={togglePhraseCombo}
-            onSendCombo={handleSendPhraseCombo}
-            onAddToStoryboard={addPhraseToStoryboard}
-            onAddToCollection={addPhraseToCollection}
-          />
-        );
+        return <PromptPhrases phrases={project.phrases} />;
       case "scene":
-        return (
-          <SceneBuilder
-            scenes={scenes}
-            likedScenes={likedScenes}
-            combo={sceneCombo}
-            searchTerm={sceneSearch}
-            onSearch={setSceneSearch}
-            onLike={toggleSceneLike}
-            onCombo={toggleSceneCombo}
-            onSendCombo={handleSendSceneCombo}
-            onAddToStoryboard={addSceneToStoryboard}
-            onAddToCollection={addSceneToCollection}
-          />
-        );
+        return <SceneBuilder scenes={project.scenes} />;
       case "journal":
-        return (
-          <Journal
-            entries={journalEntries}
-            likedEntries={likedJournalEntries}
-            combo={journalCombo}
-            searchTerm={journalSearch}
-            onSearch={setJournalSearch}
-            onLike={toggleJournalLike}
-            onCombo={toggleJournalCombo}
-            onSendCombo={handleSendJournalCombo}
-            onAddToStoryboard={addJournalToStoryboard}
-            onAddToCollection={addJournalToCollection}
-            onAddEntry={addJournalEntry}
-          />
-        );
+        return <Journal notes={project.journalNotes} />;
       case "storyboard":
-        return (
-          <Storyboard
-            items={storyboardItems}
-            onRemove={removeFromStoryboard}
-            onReorder={reorderStoryboard}
-            onAddCustom={addCustomToStoryboard}
-          />
-        );
+        return <Storyboard />;
       case "engines":
-        return (
-          <FriendEngine
-            data={null} // Agent gelince eklenir
-          />
-        );
+        return <FriendEngine data={null} loading={false} />;
       default:
         return null;
     }
   };
 
-  // ---------- UI ----------
   const renderTopMenu = () => (
     <div className="flex gap-4 mb-6">
       <button
@@ -208,22 +98,19 @@ function MainApp() {
       <Sidebar
         activeTab={activeTab}
         setActiveTab={setActiveTab}
-        onLogoClick={() => router.push("/landing")}
+        collapsed={sidebarCollapsed}
+        setCollapsed={setSidebarCollapsed}
+        onLogoClick={() => {
+          setActiveTab("style");
+          setTopMenu("your");
+          setSidebarCollapsed(true);
+        }}
       />
       <main className="flex-1 p-10 overflow-y-auto bg-[#f4f8fa]">
-        {renderTopMenu()}
-        {renderEchoTabs()}
+        {activeTab === "style" && sidebarCollapsed && renderTopMenu()}
+        {activeTab === "style" && sidebarCollapsed && renderEchoTabs()}
         <ProjectSelector />
         {renderContent()}
-        {showModal && selectedPhrase && (
-          <AddToSceneModal
-            phrase={selectedPhrase}
-            onClose={() => {
-              setShowModal(false);
-              setSelectedPhrase(null);
-            }}
-          />
-        )}
       </main>
     </div>
   );
