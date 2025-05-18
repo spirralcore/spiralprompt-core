@@ -55,6 +55,15 @@ export default function Journal({
     { type: "custom", label: "Note", icon: "📝" },
   ];
 
+  // Arama filtresi (type veya value içinde arar)
+  const filteredEntries = searchTerm
+    ? entries.filter(
+        (entry) =>
+          entry.value.toLowerCase().includes(searchTerm.toLowerCase()) ||
+          entry.type.toLowerCase().includes(searchTerm.toLowerCase())
+      )
+    : entries;
+
   return (
     <div className="max-w-3xl mx-auto space-y-8">
       <h2 className="text-3xl font-bold text-center mb-6 bg-gradient-to-r from-yellow-500 via-green-400 to-blue-400 bg-clip-text text-transparent">
@@ -124,7 +133,7 @@ export default function Journal({
       </div>
       {/* Journal entry list */}
       <ul className="space-y-4">
-        {entries.map((entry, idx) => (
+        {filteredEntries.map((entry, idx) => (
           <li
             key={idx}
             className="bg-white/80 rounded-xl p-4 text-gray-800 font-medium shadow border border-yellow-100 flex flex-wrap gap-2 items-center"
@@ -176,6 +185,9 @@ export default function Journal({
             </button>
           </li>
         ))}
+        {filteredEntries.length === 0 && (
+          <li className="text-gray-400 text-center w-full">No journal entries found.</li>
+        )}
       </ul>
       <div className="mt-8 text-center text-sm text-gray-500">
         <span>
