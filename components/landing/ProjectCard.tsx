@@ -55,7 +55,15 @@ export default function ProjectCard({ project }: { project: Project }) {
         )}
 
         {activeSection === "storys" && (
-          <div className="text-gray-400 text-sm italic">🌀 Storys module not implemented yet.</div>
+          <div className="text-sm text-gray-300">
+            View all your stories in {" "}
+            <a
+              href="/stories"
+              className="text-green-400 underline hover:text-green-300"
+            >
+              The Way to Your Story
+            </a>.
+          </div>
         )}
 
         {activeSection === "likes" && (
